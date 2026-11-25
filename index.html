@@ -102,6 +102,7 @@ h3{font-family:'Newsreader',Georgia,serif;font-size:17px;font-weight:400;margin:
 .knopf.aufnahme.mikroRund{width:84px;height:84px;padding:0;font-size:36px;flex:0 0 84px;box-shadow:0 2px 0 rgba(0,0,0,.18)}
 .mikroZeile{align-items:center;margin-top:12px}
 .mikroZeile>.knopf.voll{flex:1 1 140px}
+.kopfInnen,main,.leisteInnen,.sendeblatt{max-width:1200px}
 nav{display:flex;gap:4px;flex-wrap:wrap;padding:8px 0 8px}
 nav button{flex:1 1 92px;min-width:0;border:0;border-top:3px solid transparent;border-bottom:1px solid rgba(0,0,0,.25);
   border-radius:var(--radius);padding:9px 6px;font:inherit;font-size:14px;cursor:pointer;background:rgba(255,255,255,.05);color:#93A8A5;
@@ -112,16 +113,26 @@ nav button[aria-current="true"]{background:var(--watt);color:var(--papier);borde
 .schirm.an{display:block}
 .weiter{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-top:18px;padding-top:12px;border-top:1px solid var(--linieFein)}
 .schritt{display:flex;gap:12px;padding:14px 0;border-top:1px solid var(--linieFein);margin-top:6px}
-.nr{flex:0 0 32px;height:32px;border-radius:50%;background:var(--watt);color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Newsreader',Georgia,serif;font-size:17px}
+.nr{flex:0 0 32px;height:32px;border-radius:50%;background:#fff;color:var(--watt);border:2px solid var(--watt);display:flex;align-items:center;justify-content:center;font-family:'Newsreader',Georgia,serif;font-size:17px}
+.nr.fertig{background:var(--watt);color:#fff}
 .gruppe{margin-top:14px}
-.gruppeKopf{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--messing);font-weight:600;margin:0 0 4px}
+.gruppeKopf{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--messing);font-weight:600;margin:0 0 2px}
 .chip{display:inline-flex;align-items:center;gap:6px}
 .chip.an{padding:3px 4px 3px 10px}
 .chip .pm{border:0;border-radius:50%;width:24px;height:24px;background:rgba(255,255,255,.22);color:#fff;font-size:16px;line-height:1;cursor:pointer;padding:0}
 .chip .cq{min-width:30px;text-align:center;font-variant-numeric:tabular-nums}
 .menge,.menge button{border-radius:999px}
-.menge button{width:34px;height:34px}
-.mehrMenue{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0 0 28px}
+.menge button{width:28px;height:28px}
+.menge span{min-width:40px}
+.posten.z{padding:4px 0}
+.zl{display:grid;grid-template-columns:minmax(0,1fr) 130px 118px 84px 36px;gap:10px;align-items:center}
+.zl .nm b{font-weight:600;font-size:14px}
+.zl .nm .badge{margin:0 0 0 4px;vertical-align:1px}
+.zl .pr{font-size:12px;color:var(--tinteWeich);text-align:right}
+.zl .pkt{padding:0;width:34px}
+.zl.nichtGef{grid-template-columns:minmax(0,1fr) auto}
+.zl .rechts{display:flex;gap:6px}
+.mehrMenue{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0 4px 0}
 .summenBlock{margin-top:10px}
 .balkenHell{height:6px;border-radius:3px;overflow:hidden;background:var(--grund);margin-top:8px}
 .balkenHell i{display:block;height:100%;background:var(--watt);width:0}
@@ -130,17 +141,18 @@ details summary{cursor:pointer;color:var(--watt);font-size:14px}
 main{padding-bottom:110px}
 .leiste{position:fixed;left:0;right:0;bottom:0;z-index:6;background:var(--kopf);color:#fff;border-top:3px solid var(--messingRand)}
 .leiste[hidden]{display:none}
-.leisteInnen{max-width:960px;margin:0 auto;padding:8px 14px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.leisteInnen{margin:0 auto;padding:8px 14px;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .leisteInfo{background:none;border:0;color:#fff;text-align:left;font:inherit;padding:0;cursor:pointer;min-width:0}
 .leisteInfo b{display:block;font-family:'Newsreader',Georgia,serif;font-size:21px;font-weight:400}
 .leisteInfo span{display:block;font-size:12px;color:var(--kopfWeich)}
 .leisteInfo span.zuviel{color:#ff9c8c}
-.sendeblatt{max-width:960px;margin:0 auto;padding:10px 14px 0}
-.sendeZeile{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:8px}
-.sendeZeile b{flex:0 0 100%}.sendeZeile span{flex:0 0 100%;font-size:12px;color:var(--kopfWeich);margin-top:-6px}
+.sendeblatt{margin:0 auto;padding:10px 14px 0}
 .sendeblatt[hidden]{display:none}
+.sendeZeile{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:8px}
+.sendeZeile b{flex:0 0 100%}
 .sendeblatt .knopf{background:var(--kopfFeld);color:#fff;border-color:var(--kopfRand)}
-@media(max-width:520px){nav button{font-size:13px;padding:8px 4px}.leisteInfo b{font-size:18px}}
+.handyWrap{display:none;padding:12px 14px 40px}
+@media(max-width:700px){nav,main,.leiste,.stand{display:none!important}.handyWrap{display:block}.titel{font-size:18px}}
 @media print{header,.nichtdruck,.postenFuss,.alt,.leiste{display:none!important}body{background:#fff}section{border:0}}
 </style>
 </head>
@@ -160,6 +172,22 @@ main{padding-bottom:110px}
     </nav>
   </div>
 </header>
+
+<div class="handyWrap"><section id="handy" class="nichtdruck">
+  <h2>Was fällt dir ein?</h2>
+  <div class="hinweis">Sprich deine Ideen ein oder tipp sie. Zum Bestellen schickst du sie an den Laptop.</div>
+  <textarea id="hText" placeholder="zwei Kilo Hackfleisch&#10;sechs Butter&#10;Sojadrink"></textarea>
+  <div class="zeile mikroZeile">
+    <button class="knopf aufnahme mikroRund" id="hMikro" type="button" aria-label="Sprechen">🎤</button>
+    <button class="knopf klein" id="hLeeren" type="button">leeren</button>
+  </div>
+  <div class="status" id="hStatus"></div>
+  <div class="zeile" style="margin-top:8px">
+    <a class="knopf voll gross" id="hWa" target="_blank" rel="noopener">WhatsApp</a>
+    <a class="knopf gross" id="hMail">E-Mail</a>
+    <button class="knopf gross" id="hKop" type="button">Kopieren</button>
+  </div>
+</section></div>
 
 <main>
   <div class="warn" id="alt" style="display:none"></div>
@@ -185,7 +213,7 @@ main{padding-bottom:110px}
       <button class="knopf klein" id="leeren" type="button">leeren</button>
     </div>
     <div class="status" id="mikroStatus"></div>
-    <div class="hinweis">Einfach drauflos, ich sortiere es. Mit Komma oder „und“ trennen.</div>
+    <div class="hinweis">Einfach drauflos, ich sortiere es. Nachricht vom Handy? Einfach hier einfügen.</div>
     <div class="weiter"><button class="knopf voll" type="button" data-weiter="fehlt">Weiter: Vergessen? →</button></div>
   </section>
 
@@ -209,13 +237,6 @@ main{padding-bottom:110px}
       <div class="balken balkenHell"><i id="balken"></i></div>
     </div>
     <div class="status" id="listeStatus"></div>
-    <details class="nichtdruck" style="margin-top:14px">
-      <summary>Liste vom Handy bekommen? Hier einlesen</summary>
-      <div class="hinweis" style="margin-top:6px">Den gesendeten Text oder nur die Zeile mit „BH1;“ einfügen.</div>
-      <textarea id="import" style="min-height:60px"></textarea>
-      <div class="zeile" style="margin-top:8px"><button class="knopf" id="einlesen" type="button">Einlesen</button></div>
-      <div class="status" id="importStatus"></div>
-    </details>
     <div class="weiter nichtdruck">
       <button class="knopf voll" type="button" data-weiter="shop">Weiter: Ab in den Shop →</button>
       <button class="knopf klein warnk" id="alleWeg" type="button">Wagen leeren</button>
@@ -226,23 +247,25 @@ main{padding-bottom:110px}
   <section class="schirm nichtdruck" id="reiter-shop">
     <h2>Ab in den Shop</h2>
     <div class="hinweis">Ich lege alles in den Warenkorb bei EDEKA Lück. <b>Bestellt wird nichts.</b> Das machst du am Ende selbst.</div>
-    <div class="schritt"><div class="nr">1</div><div>
+    <div class="schritt"><div class="nr" id="nr1">1</div><div>
       <b>Einmal einrichten</b>
       <div class="hinweis">Zieh diesen Knopf mit der Maus in die Lesezeichen-Leiste deines Browsers. Sie ist nicht da? Mit Strg+Umschalt+B einblenden.</div>
-      <div style="margin-top:8px"><a class="knopf voll" id="lesezeichen" href="#" title="In die Lesezeichen-Leiste ziehen">🛒 Warenkorb füllen</a></div>
+      <div class="zeile" style="margin-top:8px;align-items:center">
+        <a class="knopf voll" id="lesezeichen" href="#" title="In die Lesezeichen-Leiste ziehen">🛒 Warenkorb füllen</a>
+        <button class="knopf klein" id="lzFertig" type="button">Hab ich schon eingerichtet</button></div>
       <details style="margin-top:8px"><summary>Ziehen klappt nicht?</summary>
         <div class="hinweis" style="margin-top:4px">Lege ein Lesezeichen an und nimm als Adresse den kopierten Text.</div>
         <button class="knopf klein" id="skriptKopieren" type="button" style="margin-top:6px">Skript kopieren</button></details>
     </div></div>
-    <div class="schritt"><div class="nr">2</div><div>
+    <div class="schritt"><div class="nr" id="nr2">2</div><div>
       <b>Liste einpacken</b>
       <div class="hinweis">Kopiert deine Wagenliste für den Shop.</div>
-      <div style="margin-top:8px"><button class="knopf voll" id="shopKopieren" type="button">Liste für den Shop kopieren</button></div>
+      <div style="margin-top:8px"><button class="knopf" id="shopKopieren" type="button">Liste für den Shop kopieren</button></div>
     </div></div>
-    <div class="schritt"><div class="nr">3</div><div>
+    <div class="schritt"><div class="nr" id="nr3">3</div><div>
       <b>Zum Shop und aufs Lesezeichen klicken</b>
       <div class="hinweis">Die Artikel wandern einer nach dem anderen in den Warenkorb. Danach prüfst du ihn und bestellst selbst.</div>
-      <div style="margin-top:8px"><a class="knopf voll" target="_blank" rel="noopener" id="shopAuf">Shop öffnen</a></div>
+      <div style="margin-top:8px"><a class="knopf" target="_blank" rel="noopener" id="shopAuf">Shop öffnen</a></div>
     </div></div>
     <div class="status" id="shopStatus"></div>
   </section>
@@ -259,9 +282,7 @@ main{padding-bottom:110px}
 <!-- Feststehende Leiste -->
 <div class="leiste nichtdruck" id="leiste" hidden>
   <div class="sendeblatt" id="sendeblatt" hidden>
-    <div class="sendeZeile"><b>Für den Laptop</b><span>kurz, nur der Code</span>
-      <a class="knopf" id="waK" target="_blank" rel="noopener">WhatsApp</a><a class="knopf" id="mailK">E-Mail</a><button class="knopf" id="kopierenK" type="button">Kopieren</button><button class="knopf" id="teilenK" type="button" hidden>Teilen …</button></div>
-    <div class="sendeZeile"><b>Zum Lesen</b><span>ganze Liste mit Preisen</span>
+    <div class="sendeZeile"><b>Liste schicken</b>
       <a class="knopf" id="wa" target="_blank" rel="noopener">WhatsApp</a><a class="knopf" id="mail">E-Mail</a><button class="knopf" id="kopieren" type="button">Kopieren</button><button class="knopf" id="teilenNativ" type="button" hidden>Teilen …</button></div>
   </div>
   <div class="leisteInnen">
@@ -378,6 +399,13 @@ function wunsch(fr){
 
 /* ---------- Zustand ---------- */
 let LISTE=[]; // {id, q, roh, erl}
+let lz=false,shopK=false,shopO=false; try{lz=localStorage.getItem('bh_lz')==='1'}catch(e){}
+function stufen(){
+  [['nr1',lz,'1'],['nr2',shopK,'2'],['nr3',shopO,'3']].forEach(([id,ok,n])=>{const e=$(id);e.classList.toggle('fertig',ok);e.textContent=ok?'✓':n});
+  const k=$('shopKopieren');k.className='knopf'+(shopK?' voll':'');k.textContent=shopK?'Kopiert ✓':'Liste für den Shop kopieren';
+  $('shopAuf').className='knopf'+(shopO?' voll':'');
+  const z=$('lzFertig');z.className='knopf klein'+(lz?' voll':'');z.textContent=lz?'Eingerichtet ✓':'Hab ich schon eingerichtet';
+}
 let SET={schiff:'',personen:8,proPerson:75};
 function speichern(){try{localStorage.setItem('bh_liste',JSON.stringify(LISTE));localStorage.setItem('bh_set',JSON.stringify(SET))}catch(e){}}
 function laden(){try{LISTE=JSON.parse(localStorage.getItem('bh_liste')||'[]');Object.assign(SET,JSON.parse(localStorage.getItem('bh_set')||'{}'))}catch(e){LISTE=[]}
@@ -412,12 +440,11 @@ function zeigeListe(){
     const ord=LISTE.map((p,k)=>({p,k,j:p.id==null?-1:abtIndex(A[p.id])})).sort((x,y)=>x.j-y.j||x.k-y.k);
     let lastJ=null, h='';
     ord.forEach(({p,k,j})=>{
-      if(j!==lastJ){h+=`<div class="gruppeKopf" style="margin-top:${lastJ===null?0:14}px">${j<0?'Nicht gefunden':esc(abtName(j))}</div>`;lastJ=j}
+      if(j!==lastJ){h+=`<div class="gruppeKopf" style="margin-top:${lastJ===null?0:12}px">${j<0?'Nicht gefunden':esc(abtName(j))}</div>`;lastJ=j}
       if(p.id==null){
-        h+=`<div class="posten"><div class="postenKopf"><div class="name"><b>${esc(p.roh)}</b>
-          <div class="wunsch">Dazu habe ich nichts gefunden. Such im Shop selbst oder sag es anders.</div></div></div>
-          <div class="postenFuss"><a class="knopf klein" target="_blank" rel="noopener" href="${BASIS}/index.php?cl=search&searchparam=${encodeURIComponent(p.roh)}">Im Shop suchen</a>
-          <button class="knopf klein warnk" data-weg="${k}">Entfernen</button></div></div>`;
+        h+=`<div class="posten z"><div class="zl nichtGef"><div class="nm"><b>${esc(p.roh)}</b> <span class="wunsch">Dazu habe ich nichts gefunden.</span></div>
+          <div class="rechts"><a class="knopf klein" target="_blank" rel="noopener" href="${BASIS}/index.php?cl=search&searchparam=${encodeURIComponent(p.roh)}">Im Shop suchen</a>
+          <button class="knopf klein warnk" data-weg="${k}">Entfernen</button></div></div></div>`;
         return;
       }
       const a=A[p.id], s=zeilenSumme(a,p.q); sum+=s;
@@ -431,13 +458,12 @@ function zeigeListe(){
       const men=mehr.has(p.id)?`<div class="mehrMenue"><button class="knopf klein" data-andere="${p.id}">Anderer Artikel</button>
           <a class="knopf klein" target="_blank" rel="noopener" href="${BASIS}${a.u}">Im Shop ansehen</a>
           <button class="knopf klein warnk" data-weg="${k}">Aus dem Wagen</button></div>`:'';
-      h+=`<div class="posten"><div class="postenKopf">
-        <div class="name"><b>${esc(a.t)}</b><div>${badges(a)}</div>
-          <div class="wunsch">${preisText(a)}${p.roh&&nz(p.roh)!==nz(a.t)?' · gewünscht: '+esc(p.roh):''}</div></div>
-        <div class="summe">${eur(s)}</div></div>
-        <div class="postenFuss" style="margin-left:0">
-          <span class="menge"><button data-mm="${k}" aria-label="weniger">−</button><span>${q}</span><button data-mp="${k}" aria-label="mehr">+</button></span>
-          <button class="knopf klein" data-mehr="${p.id}" aria-label="mehr Möglichkeiten">⋯</button></div>${men}${alt}</div>`;
+      const wt=p.roh&&nz(p.roh)!==nz(a.t)?' title="gewünscht: '+esc(p.roh)+'"':'';
+      h+=`<div class="posten z"><div class="zl"><div class="nm"${wt}><b>${esc(a.t)}</b> ${badges(a)}</div>
+        <div class="pr">${preisText(a)}</div>
+        <span class="menge"><button data-mm="${k}" aria-label="weniger">−</button><span>${q}</span><button data-mp="${k}" aria-label="mehr">+</button></span>
+        <div class="summe">${eur(s)}</div>
+        <button class="knopf klein pkt" data-mehr="${p.id}" aria-label="mehr Möglichkeiten">⋯</button></div>${men}${alt}</div>`;
     });
     el.innerHTML=h;
   }
@@ -450,7 +476,7 @@ function zeigeListe(){
   const bl=$('bLuft'); bl.textContent=rest>=0?`noch ${eur(rest)} Luft`:`${eur(-rest)} über Budget`; bl.className=rest<0?'zuviel':'';
   $('leiste').hidden=!n; if(!n)$('sendeblatt').hidden=true;
   const pr=budget>0?Math.min(100,sum/budget*100):0; const b=$('balken'); b.style.width=pr+'%'; b.className=sum>budget?'zuviel':'';
-  zeigeFehlt(); speichern(); aktualisiereLinks();
+  shopK=false; stufen(); zeigeFehlt(); speichern(); aktualisiereLinks();
 }
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
@@ -473,28 +499,37 @@ function zeigeVegan(){
   VEG=VEGAN.map(v=>{const r=suche(v[1],6).sort((x,y)=>(y.vegan-x.vegan)||0)[0];return r?{k:v[0],i:r.i}:null}).filter(Boolean);
 }
 /* ---------- Teilen ---------- */
-function listeText(kurz){
-  const zl=[`Bestellliste Schiffsküche${SET.schiff?' · '+SET.schiff:''} · ${SET.personen} Personen`];
-  let sum=0;
-  LISTE.forEach(p=>{
-    if(p.id==null){zl.push(`• ${p.roh} – nicht gefunden`);return}
+function listeText(){
+  const mm=n=>n.toLocaleString('de-DE',{maximumFractionDigits:2});
+  const zl=[`🛒 Bestellliste${SET.schiff?' · '+SET.schiff:''} · ${SET.personen} Personen`,`Stand der Preise ${datum(STAND)}`];
+  let sum=0,lastJ=null;
+  const ord=LISTE.map(p=>({p,j:p.id==null?99:abtIndex(A[p.id])})).sort((x,y)=>x.j-y.j);
+  ord.forEach(({p,j})=>{
+    if(j!==lastJ){zl.push('');zl.push(j===99?'Nicht gefunden':abtName(j));lastJ=j}
+    if(p.id==null){zl.push(`• ${p.roh}`);return}
     const a=A[p.id],s=zeilenSumme(a,p.q);sum+=s;
-    zl.push(`• ${p.q.toLocaleString('de-DE')}${a.per100?' kg':' ×'} ${a.t} – ${eur(s)}`);
+    zl.push(`• ${mm(p.q)}${a.per100?' kg':' ×'} ${a.t} · ${eur(s)}`);
   });
-  zl.push(`Summe ca. ${eur(sum)} (Stand Preise ${datum(STAND)})`);
-  const code=LISTE.filter(p=>p.id!=null).map(p=>A[p.id].h+'x'+p.q).join(',');
-  if(kurz)return `Bestellliste Schiffsküche${SET.schiff?' · '+SET.schiff:''} · ${SET.personen} Personen · ${LISTE.filter(p=>p.id!=null).length} Artikel`+String.fromCharCode(10)+`BH1;${STAND};${code}`;
-  zl.push('BH1;'+STAND+';'+code);
+  zl.push('');zl.push(`Summe ca. ${eur(sum)}`);
   return zl.join('\n');
 }
 const datum=s=>{const m=s.match(/(\d{4})-(\d\d)-(\d\d)/);return m?`${m[3]}.${m[2]}.${m[1]}`:s};
 function aktualisiereLinks(){
   const t=encodeURIComponent(listeText());
-  const k=encodeURIComponent(listeText(true));
   $('wa').href='https://wa.me/?text='+t;
   $('mail').href='mailto:?subject='+encodeURIComponent('Bestellliste Schiffsküche')+'&body='+t;
-  $('waK').href='https://wa.me/?text='+k;
-  $('mailK').href='mailto:?subject='+encodeURIComponent('Bestellliste Schiffsküche (Code)')+'&body='+k;
+  handyLinks();
+}
+function handyText(){
+  const zl=zerlege($('hText').value);
+  if(!zl.length)return '';
+  const d=new Date();const dat=String(d.getDate()).padStart(2,'0')+'.'+String(d.getMonth()+1).padStart(2,'0')+'.';
+  return '🛒 Ideen für die Bestellung\n'+(SET.schiff?SET.schiff+' · ':'')+dat+'\n\n'+zl.map(x=>'• '+x).join('\n');
+}
+function handyLinks(){
+  const t=encodeURIComponent(handyText());
+  $('hWa').href='https://wa.me/?text='+t;
+  $('hMail').href='mailto:?subject='+encodeURIComponent('Ideen für die Bestellung')+'&body='+t;
 }
 function meld(id,txt){const e=$(id);e.textContent=txt;setTimeout(()=>{if(e.textContent===txt)e.textContent=''},5000)}
 async function kopiere(txt){
@@ -502,17 +537,6 @@ async function kopiere(txt){
     const ta=document.createElement('textarea');ta.value=txt;document.body.appendChild(ta);ta.select();
     let ok=false;try{ok=document.execCommand('copy')}catch(x){} ta.remove();return ok}
 }
-function einlesen(txt){
-  const m=txt.match(/BH1;([\d-]+);([^\s]*)/); if(!m)return {fehler:'Keine Codezeile „BH1;…“ gefunden.'};
-  let ok=0,fehl=0;
-  m[2].split(',').filter(Boolean).forEach(x=>{
-    const k=x.lastIndexOf('x'); const h=x.slice(0,k), q=x.slice(k+1); const i=BYHASH.get(h);
-    if(i==null||!(+q>0)){fehl++;return}
-    fuegeHinzu(A[i],+q,null); ok++;
-  });
-  return {ok,fehl,alt:m[1]!==STAND,stand:m[1]};
-}
-
 /* ---------- Warenkorb im Shop füllen ---------- */
 /* Dieses Skript läuft als Lesezeichen auf der Shop-Seite. Es benutzt keine Variablen der App. */
 function FUELL(){
@@ -570,23 +594,26 @@ function zeigeAngebote(){
 }
 
 /* ---------- Sprache ---------- */
-const SR=window.SpeechRecognition||window.webkitSpeechRecognition; let rec=null,hoert=false;
-function mikroAus(){hoert=false;$('mikro').textContent='🎤';$('mikro').classList.add('aufnahme')}
-function mikro(){
-  if(!SR){meld('mikroStatus','Dieses Gerät hat keine Spracheingabe im Browser. Nimm das Mikrofon der Tastatur.');return}
-  if(hoert){hoert=false;try{rec.stop()}catch(e){}mikroAus();return}
-  rec=new SR(); rec.lang='de-DE'; rec.interimResults=false; rec.continuous=false;
-  rec.onresult=ev=>{let t='';for(let k=ev.resultIndex;k<ev.results.length;k++)if(ev.results[k].isFinal)t+=ev.results[k][0].transcript+' ';
-    if(t.trim()){const e=$('eingabe');e.value=(e.value.trim()?e.value.trim()+', ':'')+t.trim()}};
-  rec.onerror=ev=>{meld('mikroStatus',ev.error==='not-allowed'?'Mikrofon nicht erlaubt. Bitte im Browser freigeben.':'Spracherkennung: '+ev.error);hoert=false;mikroAus()};
-  rec.onend=()=>{if(hoert){try{rec.start()}catch(e){mikroAus()}}else mikroAus()};
-  hoert=true; $('mikro').textContent='⏹'; $('mikroStatus').textContent='Ich höre zu … sprich deine Wünsche.';
-  try{rec.start()}catch(e){hoert=false;mikroAus()}
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+function macheMikro(btnId,taId,stId,trenner){
+  let rec=null,hoert=false; const btn=$(btnId);
+  const aus=()=>{hoert=false;btn.textContent='🎤'};
+  return function(){
+    if(!SR){meld(stId,'Dieses Gerät hat keine Spracheingabe im Browser. Nimm das Mikrofon der Tastatur.');return}
+    if(hoert){hoert=false;try{rec.stop()}catch(e){}aus();return}
+    rec=new SR(); rec.lang='de-DE'; rec.interimResults=false; rec.continuous=false;
+    rec.onresult=ev=>{let t='';for(let k=ev.resultIndex;k<ev.results.length;k++)if(ev.results[k].isFinal)t+=ev.results[k][0].transcript+' ';
+      if(t.trim()){const e=$(taId);e.value=(e.value.trim()?e.value.trim()+trenner:'')+t.trim();e.dispatchEvent(new Event('input'))}};
+    rec.onerror=ev=>{meld(stId,ev.error==='not-allowed'?'Mikrofon nicht erlaubt. Bitte im Browser freigeben.':'Spracherkennung: '+ev.error);aus()};
+    rec.onend=()=>{if(hoert){try{rec.start()}catch(e){aus()}}else aus()};
+    hoert=true; btn.textContent='⏹'; $(stId).textContent='Ich höre zu … sprich deine Wünsche.';
+    try{rec.start()}catch(e){aus()}
+  };
 }
 
 /* ---------- Ereignisse ---------- */
 function verstehen(){
-  const t=$('eingabe').value.trim(); if(!t)return;
+  const t=$('eingabe').value.split('\n').filter(l=>!/🛒/.test(l)&&!/^\s*([^•\n]*·\s*)?\d\d\.\d\d\.\s*$/.test(l)&&!/^\s*Stand der Preise/.test(l)).map(l=>l.replace(/^\s*[•\-*]\s*/,'')).join('\n').trim(); if(!t)return;
   let ok=0,nicht=0;
   zerlege(t).forEach(fr=>{
     const w=wunsch(fr), r=suche(w.term,1);
@@ -626,25 +653,25 @@ document.addEventListener('keydown',ev=>{
     const k=+t.dataset.neusuche,p=LISTE[k],r=suche(t.value,1)[0];
     if(r){offen.delete(p.id);p.id=r.i;p.roh=t.value;zeigeListe()}else meld('listeStatus','Nichts gefunden.')}
 });
-$('mikro').addEventListener('click',mikro);
+$('mikro').addEventListener('click',macheMikro('mikro','eingabe','mikroStatus',', '));
+$('hMikro').addEventListener('click',macheMikro('hMikro','hText','hStatus','\n'));
+$('hText').addEventListener('input',handyLinks);
+$('hLeeren').addEventListener('click',()=>{$('hText').value='';handyLinks()});
+$('hKop').addEventListener('click',async()=>{const ok=await kopiere(handyText());const k=$('hKop');k.textContent=ok?'Kopiert ✓':'Kopieren nicht möglich';setTimeout(()=>{k.textContent='Kopieren'},2500)});
 $('verstehen').addEventListener('click',verstehen);
 $('leeren').addEventListener('click',()=>{$('eingabe').value=''});
-$('teilen').addEventListener('click',()=>{const b=$('sendeblatt');b.hidden=!b.hidden;if(navigator.share){$('teilenNativ').hidden=false;$('teilenK').hidden=false}});
-$('teilenK').addEventListener('click',async()=>{try{await navigator.share({title:'Bestellliste Schiffsküche',text:listeText(true)})}catch(e){}});
+$('teilen').addEventListener('click',()=>{const b=$('sendeblatt');b.hidden=!b.hidden;if(navigator.share)$('teilenNativ').hidden=false});
 $('teilenNativ').addEventListener('click',async()=>{try{await navigator.share({title:'Bestellliste Schiffsküche',text:listeText()})}catch(e){}});
-[['kopieren',false],['kopierenK',true]].forEach(([id,kurz])=>$(id).addEventListener('click',async()=>{const ok=await kopiere(listeText(kurz));const k=$(id);k.textContent=ok?'Kopiert ✓':'Kopieren nicht möglich';setTimeout(()=>{k.textContent='Kopieren'},2500)}));
+$('kopieren').addEventListener('click',async()=>{const ok=await kopiere(listeText());const k=$('kopieren');k.textContent=ok?'Kopiert ✓':'Kopieren nicht möglich';setTimeout(()=>{k.textContent='Kopieren'},2500)});
 $('alleWeg').addEventListener('click',()=>{if(LISTE.length&&confirm('Wirklich die ganze Liste löschen?')){LISTE=[];zeigeListe()}});
-$('einlesen').addEventListener('click',()=>{
-  const r=einlesen($('import').value);
-  if(r.fehler){meld('importStatus',r.fehler);return}
-  $('import').value=''; zeigeListe();
-  meld('importStatus',`${r.ok} Artikel eingelesen${r.fehl?`, ${r.fehl} nicht mehr im Shop gefunden`:''}${r.alt?` (Liste hatte Preisstand ${datum(r.stand)})`:''}.`);
-});
 $('shopKopieren').addEventListener('click',async()=>{
-  if(!LISTE.some(p=>p.id!=null)){meld('shopStatus','Die Liste ist leer.');return}
+  if(!LISTE.some(p=>p.id!=null)){meld('shopStatus','Der Wagen ist leer.');return}
   const n=LISTE.filter(p=>p.id!=null).length;
-  meld('shopStatus',(await kopiere(shopText()))?`${n} Artikel kopiert. Jetzt den Shop öffnen und das Lesezeichen anklicken.`:'Kopieren nicht möglich.');
+  if(await kopiere(shopText())){shopK=true;stufen();meld('shopStatus',`${n} Artikel kopiert. Jetzt den Shop öffnen und das Lesezeichen anklicken.`)}
+  else meld('shopStatus','Kopieren nicht möglich.');
 });
+$('shopAuf').addEventListener('click',()=>{shopO=true;stufen()});
+$('lzFertig').addEventListener('click',()=>{lz=!lz;try{localStorage.setItem('bh_lz',lz?'1':'0')}catch(e){}stufen()});
 $('shopAuf').href=BASIS+'/';
 const skriptText='javascript:'+encodeURIComponent('('+FUELL.toString()+')()');
 $('lesezeichen').href=skriptText;
