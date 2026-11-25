@@ -4,6 +4,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Bestellhilfe Schiffsküche</title>
+<meta name="theme-color" content="#0C1D14">
+<meta name="application-name" content="Bestellhilfe">
+<meta name="apple-mobile-web-app-title" content="Bestellhilfe">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="48x48" href="icons/favicon-48.png">
+<link rel="icon" type="image/svg+xml" href="icons/icon.svg">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
 <style>
 :root{
   --papier:#FAF8F1; --flaeche:#FFFFFF; --grund:#E9EDE7;
@@ -560,5 +568,6 @@ if(!SR)$('mikro').title='Keine Spracheingabe in diesem Browser; Tastatur-Mikrofo
 zeigeVegan(); zeigeListe(); zeigeAngebote();
 })();
 </script>
+<script>if("serviceWorker" in navigator&&location.protocol==="https:")navigator.serviceWorker.register("sw.js").catch(function(){});</script>
 </body>
 </html>
