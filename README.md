@@ -2,6 +2,7 @@
 
 Kleine Hilfe für die Wochenbestellung der Schiffsküche bei EDEKA Lück in Niebüll.
 
+- [Bedienungsanleitung (PDF)](Bedienungsanleitung.pdf)
 - Wünsche tippen oder sprechen, die App ordnet sie Artikeln aus dem Shop zu und rechnet die Summe.
 - Liste vom Handy zum Laptop schicken, dort per Lesezeichen den Warenkorb im Shop füllen.
 - **Die App bestellt nichts.** Der Warenkorb wird im Shop geprüft und von Hand bestellt.

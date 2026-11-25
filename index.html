@@ -81,16 +81,20 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 .leer{color:var(--tinteWeich);padding:6px 0}
 .mitte{display:flex;justify-content:space-between;gap:10px;padding:8px 0 0;border-top:2px solid var(--linie);margin-top:6px;font-weight:600}
 .status{font-size:13px;color:var(--watt);min-height:18px;margin-top:6px}
-.zweispaltig{display:grid;grid-template-columns:1fr;gap:12px}
+.zweispaltig{display:grid;grid-template-columns:minmax(0,1fr);gap:12px}
+.zweispaltig>div{min-width:0}
+section{min-width:0;overflow-wrap:anywhere}
+.chips,.zeile{min-width:0}
 @media(max-width:520px){.titel{font-size:18px}.stand{display:none}.zahlen{gap:12px;flex-wrap:nowrap;margin-top:4px}.zahlen b{font-size:17px}.zahlen div{font-size:10px}.balken{margin-top:5px}.kopfInnen{padding:7px 12px}}
-@media(min-width:860px){.zweispaltig{grid-template-columns:1fr 1.2fr;align-items:start}}
+@media(min-width:860px){.zweispaltig{grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);align-items:start}}
 @media print{header,.nichtdruck,.postenFuss,.alt{display:none!important}body{background:#fff}section{border:0}}
 </style>
 </head>
 <body>
 <header>
   <div class="kopfInnen">
-    <div class="titel">Bestellhilfe Schiffsküche</div>
+    <div class="titel" style="display:flex;justify-content:space-between;align-items:baseline;gap:10px">Bestellhilfe Schiffsküche
+      <a href="Bedienungsanleitung.pdf" target="_blank" rel="noopener" style="font:13px/1 'Inter',system-ui,sans-serif;color:#E8C979;text-decoration:none;border:1px solid #B08D3C;border-radius:4px;padding:5px 9px;white-space:nowrap">Anleitung</a></div>
     <div class="stand" id="stand"></div>
     <div class="zahlen">
       <div>Positionen<b id="kPos">0</b></div>
