@@ -135,7 +135,9 @@ main{padding-bottom:110px}
 .leisteInfo b{display:block;font-family:'Newsreader',Georgia,serif;font-size:21px;font-weight:400}
 .leisteInfo span{display:block;font-size:12px;color:var(--kopfWeich)}
 .leisteInfo span.zuviel{color:#ff9c8c}
-.sendeblatt{max-width:960px;margin:0 auto;padding:10px 14px 0;display:flex;gap:8px;flex-wrap:wrap}
+.sendeblatt{max-width:960px;margin:0 auto;padding:10px 14px 0}
+.sendeZeile{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:8px}
+.sendeZeile b{flex:0 0 100%}.sendeZeile span{flex:0 0 100%;font-size:12px;color:var(--kopfWeich);margin-top:-6px}
 .sendeblatt[hidden]{display:none}
 .sendeblatt .knopf{background:var(--kopfFeld);color:#fff;border-color:var(--kopfRand)}
 @media(max-width:520px){nav button{font-size:13px;padding:8px 4px}.leisteInfo b{font-size:18px}}
@@ -257,10 +259,10 @@ main{padding-bottom:110px}
 <!-- Feststehende Leiste -->
 <div class="leiste nichtdruck" id="leiste" hidden>
   <div class="sendeblatt" id="sendeblatt" hidden>
-    <a class="knopf" id="wa" target="_blank" rel="noopener">WhatsApp</a>
-    <a class="knopf" id="mail">E-Mail</a>
-    <button class="knopf" id="kopieren" type="button">Text kopieren</button>
-    <button class="knopf" id="teilenNativ" type="button" hidden>Teilen …</button>
+    <div class="sendeZeile"><b>Für den Laptop</b><span>kurz, nur der Code</span>
+      <a class="knopf" id="waK" target="_blank" rel="noopener">WhatsApp</a><a class="knopf" id="mailK">E-Mail</a><button class="knopf" id="kopierenK" type="button">Kopieren</button><button class="knopf" id="teilenK" type="button" hidden>Teilen …</button></div>
+    <div class="sendeZeile"><b>Zum Lesen</b><span>ganze Liste mit Preisen</span>
+      <a class="knopf" id="wa" target="_blank" rel="noopener">WhatsApp</a><a class="knopf" id="mail">E-Mail</a><button class="knopf" id="kopieren" type="button">Kopieren</button><button class="knopf" id="teilenNativ" type="button" hidden>Teilen …</button></div>
   </div>
   <div class="leisteInnen">
     <button class="leisteInfo" type="button" data-weiter="wagen"><b id="bSumme">0,00 €</b><span id="bLuft"></span></button>
@@ -399,7 +401,7 @@ function badges(a){
 function preisText(a){return a.per100?`${eur(einzel(a))}/kg`:eur(a.p)+(a.g?` · ${a.g}`:'')}
 const offen=new Set(), mehr=new Set();
 const ABT=['Obst & Gemüse','Milch, Eier & Käse','Fleisch, Wurst & Fisch','Brot & Backen','Nudeln, Reis, Soßen & Gewürze','Konserven & Fertiges','Frühstück & Süßes','Getränke & Kaffee','Pflanzliches','Tiefgekühltes'];
-const ABTTEST=[[9,/TK\/|^Eis\//],[8,/^Pflanzliche/],[0,/^(Obst|Gemuese)\//],[1,/^(Eier-Kaese-Molkerei|Joghurt-Desserts|Kaese)/],[2,/^(Fleisch-Wurst-Fisch|Wurst-Aufschnitt)/],
+const ABTTEST=[[9,/TK\/|^Eis\//],[8,/^Pflanzliche/],[0,/^(Obst|Gemuese|Vorgepackte-Ware)\//],[1,/^(Eier-Kaese-Molkerei|Joghurt-Desserts|Kaese)/],[2,/^(Fleisch|Fleisch-Wurst-Fisch|Wurst-Aufschnitt)/],
   [3,/^Brot-Backzutaten/],[4,/^Sossen|Nudeln|Reis|Pasta/],[5,/^(Konserven|Fertiggerichte|Convenience)/],[6,/^(Rund-um|Kuchen|Knabber)/],[7,/^(Wasser|Heiss)/]];
 function abtIndex(a){const t=ABTTEST.find(x=>x[1].test(a.c));return t?t[0]:ABT.length}
 function abtName(j){return j<ABT.length?ABT[j]:'Sonstiges'}
@@ -471,7 +473,7 @@ function zeigeVegan(){
   VEG=VEGAN.map(v=>{const r=suche(v[1],6).sort((x,y)=>(y.vegan-x.vegan)||0)[0];return r?{k:v[0],i:r.i}:null}).filter(Boolean);
 }
 /* ---------- Teilen ---------- */
-function listeText(){
+function listeText(kurz){
   const zl=[`Bestellliste Schiffsküche${SET.schiff?' · '+SET.schiff:''} · ${SET.personen} Personen`];
   let sum=0;
   LISTE.forEach(p=>{
@@ -481,14 +483,18 @@ function listeText(){
   });
   zl.push(`Summe ca. ${eur(sum)} (Stand Preise ${datum(STAND)})`);
   const code=LISTE.filter(p=>p.id!=null).map(p=>A[p.id].h+'x'+p.q).join(',');
+  if(kurz)return `Bestellliste Schiffsküche${SET.schiff?' · '+SET.schiff:''} · ${SET.personen} Personen · ${LISTE.filter(p=>p.id!=null).length} Artikel`+String.fromCharCode(10)+`BH1;${STAND};${code}`;
   zl.push('BH1;'+STAND+';'+code);
   return zl.join('\n');
 }
 const datum=s=>{const m=s.match(/(\d{4})-(\d\d)-(\d\d)/);return m?`${m[3]}.${m[2]}.${m[1]}`:s};
 function aktualisiereLinks(){
   const t=encodeURIComponent(listeText());
+  const k=encodeURIComponent(listeText(true));
   $('wa').href='https://wa.me/?text='+t;
   $('mail').href='mailto:?subject='+encodeURIComponent('Bestellliste Schiffsküche')+'&body='+t;
+  $('waK').href='https://wa.me/?text='+k;
+  $('mailK').href='mailto:?subject='+encodeURIComponent('Bestellliste Schiffsküche (Code)')+'&body='+k;
 }
 function meld(id,txt){const e=$(id);e.textContent=txt;setTimeout(()=>{if(e.textContent===txt)e.textContent=''},5000)}
 async function kopiere(txt){
@@ -623,9 +629,10 @@ document.addEventListener('keydown',ev=>{
 $('mikro').addEventListener('click',mikro);
 $('verstehen').addEventListener('click',verstehen);
 $('leeren').addEventListener('click',()=>{$('eingabe').value=''});
-$('teilen').addEventListener('click',()=>{const b=$('sendeblatt');b.hidden=!b.hidden;if(navigator.share)$('teilenNativ').hidden=false});
+$('teilen').addEventListener('click',()=>{const b=$('sendeblatt');b.hidden=!b.hidden;if(navigator.share){$('teilenNativ').hidden=false;$('teilenK').hidden=false}});
+$('teilenK').addEventListener('click',async()=>{try{await navigator.share({title:'Bestellliste Schiffsküche',text:listeText(true)})}catch(e){}});
 $('teilenNativ').addEventListener('click',async()=>{try{await navigator.share({title:'Bestellliste Schiffsküche',text:listeText()})}catch(e){}});
-$('kopieren').addEventListener('click',async()=>{const ok=await kopiere(listeText());const k=$('kopieren');k.textContent=ok?'Kopiert ✓':'Kopieren nicht möglich';setTimeout(()=>{k.textContent='Text kopieren'},2500)});
+[['kopieren',false],['kopierenK',true]].forEach(([id,kurz])=>$(id).addEventListener('click',async()=>{const ok=await kopiere(listeText(kurz));const k=$(id);k.textContent=ok?'Kopiert ✓':'Kopieren nicht möglich';setTimeout(()=>{k.textContent='Kopieren'},2500)}));
 $('alleWeg').addEventListener('click',()=>{if(LISTE.length&&confirm('Wirklich die ganze Liste löschen?')){LISTE=[];zeigeListe()}});
 $('einlesen').addEventListener('click',()=>{
   const r=einlesen($('import').value);
