@@ -10,6 +10,8 @@ Kleine Hilfe für die Wochenbestellung der Schiffsküche bei EDEKA Lück in Nieb
 
 ## Automatische Aktualisierung
 
-Der Lauf `.github/workflows/preise.yml` holt jeden Mittwoch früh (bestellt wird meist Mittwoch und Donnerstag) die aktuellen Angebote: `aktualisieren.py` liest nur die öffentlichen Angebotsseiten (eine Anfrage alle 2 Sekunden, wie in der robots.txt des Shops verlangt), trägt sie in das Sortiment (`sortiment.json`, Stand 25.11.2026) ein, baut die App neu (`bauen.py` aus `vorlage.html`) und veröffentlicht sie. Der Stand steht in `stand.json`. Von Hand starten: Reiter *Actions*, „Preise und Angebote aktualisieren“, *Run workflow*.
+Jeden Mittwoch früh (bestellt wird meist Mittwoch und Donnerstag) holt eine geplante Aufgabe in Windows auf Jörgs PC die aktuellen Angebote: `wochenlauf.ps1` holt den neuesten Stand, `aktualisieren.py` liest nur die öffentlichen Angebotsseiten (eine Anfrage alle 2 Sekunden, wie in der robots.txt des Shops verlangt), trägt sie in das Sortiment (`sortiment.json`, Stand 25.11.2026) ein und baut die App neu (`bauen.py` aus `vorlage.html`); danach wird sie hochgeladen. Der Stand steht in `stand.json`. Mehrere PCs sind möglich: Wer zuerst läuft, holt die Angebote, die anderen merken das am `stand.json` und tun nichts. Einrichten auf einem PC: `einrichten.ps1`.
+
+Bei GitHub selbst geht das nicht, weil der Shop Anfragen von GitHub-Servern ablehnt.
 
 Prototyp. Preise und Angebote sind eine Momentaufnahme und vor dem Bestellen im Shop zu prüfen.

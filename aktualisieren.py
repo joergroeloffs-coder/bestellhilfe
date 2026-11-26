@@ -8,7 +8,7 @@ Ablauf:
 Abgelaufene Angebote behalten ihr altes Datum; die App zeigt dann „Angebot vorbei, Preis prüfen“.
 
 Aufruf:  python -I aktualisieren.py [--erzwingen]
-Läuft jeden Mittwoch früh bei GitHub (siehe .github/workflows/preise.yml).
+Läuft jeden Mittwoch früh als geplante Aufgabe in Windows (siehe wochenlauf.ps1, einrichten.ps1).
 """
 import datetime, json, os, re, shutil, subprocess, sys
 
