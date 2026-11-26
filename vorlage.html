@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Bestellhilfe Schiffsküche</title>
+<meta name="theme-color" content="#0C1D14">
+<meta name="application-name" content="Bestellhilfe">
+<meta name="apple-mobile-web-app-title" content="Bestellhilfe">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="48x48" href="icons/favicon-48.png">
+<link rel="icon" type="image/svg+xml" href="icons/icon.svg">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<style>
+:root{
+  --papier:#FAF8F1; --flaeche:#FFFFFF; --grund:#E9EDE7;
+  --linie:#CDB77E; --linieFein:#E6DCC0;
+  --tinte:#10251A; --tinteWeich:#57685C;
+  --watt:#1E5C3E; --wattHell:#E5EFE8;
+  --messing:#80621C; --messingRand:#B08D3C; --messingHell:#F7F0DC;
+  --ziegel:#93382B; --ziegelHell:#F7E7E2;
+  --kopf:#0C1D14; --kopfWeich:#93A899; --kopfFeld:#1A3325; --kopfRand:#39543F;
+  --radius:4px; --hoehe:38px;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--papier);color:var(--tinte);
+  font-family:'Inter',system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:15px;line-height:1.4}
+.serif{font-family:'Newsreader',Georgia,serif}
+.mono{font-family:'IBM Plex Mono',ui-monospace,Consolas,monospace}
+header{background:var(--kopf);color:#fff;border-bottom:3px solid var(--messingRand);position:sticky;top:0;z-index:5}
+.kopfInnen{max-width:960px;margin:0 auto;padding:10px 14px}
+.titel{font-family:'Newsreader',Georgia,serif;font-size:22px;line-height:1.1}
+.stand{font-size:12px;color:var(--kopfWeich);margin-top:2px}
+.zahlen{display:flex;gap:18px;margin-top:8px;flex-wrap:wrap}
+.zahlen div{font-size:11px;color:var(--kopfWeich);text-transform:uppercase;letter-spacing:.04em}
+.zahlen b{display:block;font-family:'Newsreader',Georgia,serif;font-size:22px;font-weight:400;color:#fff;text-transform:none;letter-spacing:0}
+.balken{height:6px;background:var(--kopfFeld);border-radius:3px;margin-top:8px;overflow:hidden}
+.balken i{display:block;height:100%;background:var(--messingRand);width:0}
+.balken i.zuviel{background:#d9604e}
+main{max-width:960px;margin:0 auto;padding:12px 14px 80px}
+section{background:var(--flaeche);border:1px solid var(--linie);border-radius:var(--radius);padding:12px;margin-bottom:12px}
+h2{font-family:'Newsreader',Georgia,serif;font-size:20px;font-weight:400;margin:0 0 8px}
+.hinweis{color:var(--tinteWeich);font-size:13px}
+.warn{background:var(--ziegelHell);border:1px solid var(--ziegel);color:var(--ziegel);padding:8px 10px;border-radius:var(--radius);margin-bottom:12px;font-size:13px}
+label.feld{display:flex;flex-direction:column;font-size:12px;color:var(--tinteWeich);gap:3px}
+input[type=text],input[type=number],textarea,select{
+  font:inherit;font-size:16px;color:var(--tinte);background:#fff;border:1px solid var(--linie);
+  border-radius:var(--radius);padding:8px;width:100%}
+textarea{min-height:84px;resize:vertical}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--watt);outline-offset:1px}
+.knopf{display:inline-flex;align-items:center;justify-content:center;gap:6px;height:var(--hoehe);padding:0 14px;
+  font:inherit;font-size:14px;line-height:1;border-radius:var(--radius);background:transparent;color:var(--tinte);
+  border:1px solid var(--linie);white-space:nowrap;cursor:pointer;text-decoration:none}
+.knopf.voll{background:var(--watt);color:#fff;border-color:var(--watt)}
+.knopf.warnk{color:var(--ziegel);border-color:var(--ziegel)}
+.knopf.klein{height:30px;padding:0 9px;font-size:13px}
+.knopf.aufnahme{background:var(--ziegel);color:#fff;border-color:var(--ziegel)}
+.knopf[disabled]{opacity:.45;cursor:default}
+.zeile{display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end}
+.zeile>*{flex:1 1 120px}
+.zeile>.knopf{flex:0 0 auto}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.chip{border:1px solid var(--linie);background:var(--messingHell);color:var(--messing);border-radius:14px;padding:5px 10px;font-size:13px;cursor:pointer}
+.chip.vegan{background:var(--wattHell);color:var(--watt);border-color:var(--watt)}
+.chip.an{background:var(--watt);color:#fff;border-color:var(--watt)}
+.posten{border-top:1px solid var(--linieFein);padding:9px 0}
+.posten:first-child{border-top:0}
+.postenKopf{display:flex;gap:8px;align-items:flex-start}
+.haken{margin-top:3px;width:20px;height:20px;accent-color:var(--watt);flex:0 0 auto}
+.name{flex:1;min-width:0}
+.name b{font-weight:600;overflow-wrap:anywhere}
+.wunsch{font-size:12px;color:var(--tinteWeich)}
+.badge{display:inline-block;font-size:11px;border-radius:3px;padding:1px 6px;margin-right:4px;border:1px solid var(--linie)}
+.badge.ang{background:var(--messingHell);color:var(--messing);border-color:var(--messingRand)}
+.badge.stamm{background:var(--wattHell);color:var(--watt);border-color:var(--watt)}
+.badge.veg{background:var(--wattHell);color:var(--watt);border-color:var(--watt)}
+.badge.info{background:var(--grund);color:var(--tinteWeich)}
+.summe{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums;min-width:68px}
+.postenFuss{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:6px;margin-left:28px}
+.menge{display:inline-flex;align-items:center;border:1px solid var(--linie);border-radius:var(--radius);overflow:hidden}
+.menge button{border:0;background:var(--grund);width:30px;height:30px;font-size:17px;cursor:pointer;color:var(--tinte)}
+.menge span{min-width:48px;text-align:center;font-variant-numeric:tabular-nums;padding:0 4px;font-size:14px}
+.alt{margin:6px 0 0 28px;background:var(--papier);border:1px solid var(--linieFein);border-radius:var(--radius);padding:6px}
+.altZeile{display:flex;justify-content:space-between;gap:8px;padding:6px 4px;border-top:1px solid var(--linieFein);cursor:pointer;font-size:14px}
+.altZeile:first-of-type{border-top:0}
+.altZeile:hover{background:var(--wattHell)}
+.leer{color:var(--tinteWeich);padding:6px 0}
+.mitte{display:flex;justify-content:space-between;gap:10px;padding:8px 0 0;border-top:2px solid var(--linie);margin-top:6px;font-weight:600}
+.status{font-size:13px;color:var(--watt);min-height:18px;margin-top:6px}
+.zweispaltig{display:grid;grid-template-columns:minmax(0,1fr);gap:12px}
+.zweispaltig>div{min-width:0}
+section{min-width:0;overflow-wrap:anywhere}
+.chips,.zeile{min-width:0}
+@media(max-width:520px){.titel{font-size:18px}.stand{display:none}.zahlen{gap:12px;flex-wrap:nowrap;margin-top:4px}.zahlen b{font-size:17px}.zahlen div{font-size:10px}.balken{margin-top:5px}.kopfInnen{padding:7px 12px}}
+@media(min-width:860px){.zweispaltig{grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);align-items:start}}
+/* ---------- Reiter, runde Knöpfe, Leiste ---------- */
+h3{font-family:'Newsreader',Georgia,serif;font-size:17px;font-weight:400;margin:16px 0 0}
+.knopf{border-radius:999px}
+.knopf.gross{height:46px;padding:0 22px;font-size:16px}
+.knopf.aufnahme.mikroRund{width:84px;height:84px;padding:0;font-size:36px;flex:0 0 84px;box-shadow:0 2px 0 rgba(0,0,0,.18)}
+.mikroZeile{align-items:center;margin-top:12px}
+.mikroZeile>.knopf.voll{flex:1 1 140px}
+.kopfInnen,main,.leisteInnen,.sendeblatt{max-width:1200px}
+nav{display:flex;gap:4px;flex-wrap:wrap;padding:8px 0 8px}
+nav button{flex:1 1 92px;min-width:0;border:0;border-top:3px solid transparent;border-bottom:1px solid rgba(0,0,0,.25);
+  border-radius:var(--radius);padding:9px 6px;font:inherit;font-size:14px;cursor:pointer;background:rgba(255,255,255,.05);color:#93A8A5;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+nav button[aria-current="true"]{background:var(--watt);color:var(--papier);border-top-color:var(--watt);border-bottom-color:var(--watt)}
+.zahlPille{display:inline-block;min-width:20px;padding:0 6px;border-radius:10px;background:var(--messingRand);color:var(--kopf);font-size:12px;line-height:18px;text-align:center}
+.schirm{display:none}
+.schirm.an{display:block}
+.weiter{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-top:18px;padding-top:12px;border-top:1px solid var(--linieFein)}
+.schritt{display:flex;gap:12px;padding:14px 0;border-top:1px solid var(--linieFein);margin-top:6px}
+.nr{flex:0 0 32px;height:32px;border-radius:50%;background:#fff;color:var(--watt);border:2px solid var(--watt);display:flex;align-items:center;justify-content:center;font-family:'Newsreader',Georgia,serif;font-size:17px}
+.nr.fertig{background:var(--watt);color:#fff}
+.gruppe{margin-top:14px}
+.gruppeKopf{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--messing);font-weight:600;margin:0 0 2px}
+.chip{display:inline-flex;align-items:center;gap:6px}
+.chip.an{padding:3px 4px 3px 10px}
+.chip .pm{border:0;border-radius:50%;width:24px;height:24px;background:rgba(255,255,255,.22);color:#fff;font-size:16px;line-height:1;cursor:pointer;padding:0}
+.chip .cq{min-width:30px;text-align:center;font-variant-numeric:tabular-nums}
+.menge,.menge button{border-radius:999px}
+.menge button{width:28px;height:28px}
+.menge span{min-width:40px}
+.posten.z{padding:4px 0}
+.zl{display:grid;grid-template-columns:minmax(0,1fr) 130px 118px 84px 36px;gap:10px;align-items:center}
+.zl .nm b{font-weight:600;font-size:14px}
+.zl .nm .badge{margin:0 0 0 4px;vertical-align:1px}
+.zl .pr{font-size:12px;color:var(--tinteWeich);text-align:right}
+.zl .pkt{padding:0;width:34px}
+.zl.nichtGef{grid-template-columns:minmax(0,1fr) auto}
+.zl .rechts{display:flex;gap:6px}
+.mehrMenue{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0 4px 0}
+.summenBlock{margin-top:10px}
+.balkenHell{height:6px;border-radius:3px;overflow:hidden;background:var(--grund);margin-top:8px}
+.balkenHell i{display:block;height:100%;background:var(--watt);width:0}
+.balkenHell i.zuviel{background:var(--ziegel)}
+details summary{cursor:pointer;color:var(--watt);font-size:14px}
+main{padding-bottom:110px}
+.leiste{position:fixed;left:0;right:0;bottom:0;z-index:6;background:var(--kopf);color:#fff;border-top:3px solid var(--messingRand)}
+.leiste[hidden]{display:none}
+.leisteInnen{margin:0 auto;padding:8px 14px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.leisteInfo{background:none;border:0;color:#fff;text-align:left;font:inherit;padding:0;cursor:pointer;min-width:0}
+.leisteInfo b{display:block;font-family:'Newsreader',Georgia,serif;font-size:21px;font-weight:400}
+.leisteInfo span{display:block;font-size:12px;color:var(--kopfWeich)}
+.leisteInfo span.zuviel{color:#ff9c8c}
+.sendeblatt{margin:0 auto;padding:10px 14px 0}
+.sendeblatt[hidden]{display:none}
+.sendeZeile{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:8px}
+.sendeZeile b{flex:0 0 100%}
+.sendeblatt .knopf{background:var(--kopfFeld);color:#fff;border-color:var(--kopfRand)}
+.handyWrap{display:none;padding:12px 14px 40px}
+@media(max-width:700px){nav,main,.leiste,.stand{display:none!important}.handyWrap{display:block}.titel{font-size:18px}}
+@media print{header,.nichtdruck,.postenFuss,.alt,.leiste{display:none!important}body{background:#fff}section{border:0}}
+</style>
+</head>
+<body>
+<header>
+  <div class="kopfInnen">
+    <div class="titel" style="display:flex;justify-content:space-between;align-items:baseline;gap:10px">Bestellhilfe Schiffsküche
+      <a href="Bedienungsanleitung.pdf" target="_blank" rel="noopener" style="font:13px/1 'Inter',system-ui,sans-serif;color:#E8C979;text-decoration:none;border:1px solid #B08D3C;border-radius:999px;padding:5px 11px;white-space:nowrap">Anleitung</a></div>
+    <div class="stand" id="stand"></div>
+    <nav id="reiterLeiste">
+      <button type="button" data-reiter="wer" aria-current="true">Wer frisst wo?</button>
+      <button type="button" data-reiter="wuensche">Wünsche</button>
+      <button type="button" data-reiter="fehlt">Vergessen?</button>
+      <button type="button" data-reiter="wagen">Wagen <span class="zahlPille" id="kPos">0</span></button>
+      <button type="button" data-reiter="shop">Ab in den Shop</button>
+      <button type="button" data-reiter="angebote">Angebote</button>
+    </nav>
+  </div>
+</header>
+
+<div class="handyWrap"><section id="handy" class="nichtdruck">
+  <h2>Was fällt dir ein?</h2>
+  <div class="hinweis">Sprich deine Ideen ein oder tipp sie. Zum Bestellen schickst du sie an den Laptop.</div>
+  <textarea id="hText" placeholder="zwei Kilo Hackfleisch&#10;sechs Butter&#10;Sojadrink"></textarea>
+  <div class="zeile mikroZeile">
+    <button class="knopf aufnahme mikroRund" id="hMikro" type="button" aria-label="Sprechen">🎤</button>
+    <button class="knopf klein" id="hLeeren" type="button">leeren</button>
+  </div>
+  <div class="status" id="hStatus"></div>
+  <div class="zeile" style="margin-top:8px">
+    <a class="knopf voll gross" id="hWa" target="_blank" rel="noopener">WhatsApp</a>
+    <a class="knopf gross" id="hMail">E-Mail</a>
+    <button class="knopf gross" id="hKop" type="button">Kopieren</button>
+  </div>
+</section></div>
+
+<main>
+  <div class="warn" id="alt" style="display:none"></div>
+
+  <!-- 1. Wer frisst wo? -->
+  <section class="schirm an nichtdruck" id="reiter-wer">
+    <h2>Wer frisst wo?</h2>
+    <div class="zeile">
+      <label class="feld">Schiff<input type="text" id="schiff" placeholder="z. B. Uthlande"></label>
+      <label class="feld">Personen an Bord<input type="number" id="personen" min="1" max="30" value="8"></label>
+      <label class="feld">Budget je Kopf (€)<input type="number" id="proPerson" min="10" max="300" value="75"></label>
+    </div>
+    <div class="weiter"><button class="knopf voll" type="button" data-weiter="wuensche">Weiter: Wünsche →</button></div>
+  </section>
+
+  <!-- 2. Wünsche -->
+  <section class="schirm nichtdruck" id="reiter-wuensche">
+    <h2>Was kommt in den Einkaufswagen?</h2>
+    <textarea id="eingabe" placeholder="zwei Kilo Hackfleisch&#10;sechs Butter&#10;Milch&#10;10 Eier&#10;Kartoffeln …"></textarea>
+    <div class="zeile mikroZeile">
+      <button class="knopf aufnahme mikroRund" id="mikro" type="button" aria-label="Sprechen">🎤</button>
+      <button class="knopf voll gross" id="verstehen" type="button">Auf die Liste</button>
+      <button class="knopf klein" id="leeren" type="button">leeren</button>
+    </div>
+    <div class="status" id="mikroStatus"></div>
+    <div class="hinweis">Einfach drauflos, ich sortiere es. Nachricht vom Handy? Einfach hier einfügen.</div>
+    <div class="weiter"><button class="knopf voll" type="button" data-weiter="fehlt">Weiter: Vergessen? →</button></div>
+  </section>
+
+  <!-- 3. Vergessen? -->
+  <section class="schirm nichtdruck" id="reiter-fehlt">
+    <h2>Habt ihr an alles gedacht?</h2>
+    <div class="hinweis">Aus alten Bestellungen. Antippen = kommt in den Wagen, mit + und − stellst du die Menge ein.</div>
+    <div id="fehlt"></div>
+    <h3>Für die Veganer an Bord</h3>
+    <div class="chips" id="vegan"></div>
+    <div class="weiter"><button class="knopf voll" type="button" data-weiter="wagen">Weiter: Zum Wagen →</button></div>
+  </section>
+
+  <!-- 4. Wagen -->
+  <section class="schirm" id="reiter-wagen">
+    <h2>Das liegt im Wagen</h2>
+    <div id="liste"></div>
+    <div class="summenBlock nichtdruck">
+      <div class="mitte"><span>Summe ca.</span><span id="listeSumme">0,00 €</span></div>
+      <div class="hinweis" id="luftText"></div>
+      <div class="balken balkenHell"><i id="balken"></i></div>
+    </div>
+    <div class="status" id="listeStatus"></div>
+    <div class="weiter nichtdruck">
+      <button class="knopf voll" type="button" data-weiter="shop">Weiter: Ab in den Shop →</button>
+      <button class="knopf klein warnk" id="alleWeg" type="button">Wagen leeren</button>
+    </div>
+  </section>
+
+  <!-- 5. Shop -->
+  <section class="schirm nichtdruck" id="reiter-shop">
+    <h2>Ab in den Shop</h2>
+    <div class="hinweis">Ich lege alles in den Warenkorb bei EDEKA Lück. <b>Bestellt wird nichts.</b> Das machst du am Ende selbst.</div>
+    <div class="schritt"><div class="nr" id="nr1">1</div><div>
+      <b>Einmal einrichten</b>
+      <div class="hinweis">Zieh diesen Knopf mit der Maus in die Lesezeichen-Leiste deines Browsers. Sie ist nicht da? Mit Strg+Umschalt+B einblenden.</div>
+      <div class="zeile" style="margin-top:8px;align-items:center">
+        <a class="knopf voll" id="lesezeichen" href="#" title="In die Lesezeichen-Leiste ziehen">🛒 Warenkorb füllen</a>
+        <button class="knopf klein" id="lzFertig" type="button">Hab ich schon eingerichtet</button></div>
+      <details style="margin-top:8px"><summary>Ziehen klappt nicht?</summary>
+        <div class="hinweis" style="margin-top:4px">Lege ein Lesezeichen an und nimm als Adresse den kopierten Text.</div>
+        <button class="knopf klein" id="skriptKopieren" type="button" style="margin-top:6px">Skript kopieren</button></details>
+    </div></div>
+    <div class="schritt"><div class="nr" id="nr2">2</div><div>
+      <b>Liste einpacken</b>
+      <div class="hinweis">Kopiert deine Wagenliste für den Shop.</div>
+      <div style="margin-top:8px"><button class="knopf" id="shopKopieren" type="button">Liste für den Shop kopieren</button></div>
+    </div></div>
+    <div class="schritt"><div class="nr" id="nr3">3</div><div>
+      <b>Zum Shop und aufs Lesezeichen klicken</b>
+      <div class="hinweis">Die Artikel wandern einer nach dem anderen in den Warenkorb. Danach prüfst du ihn und bestellst selbst.</div>
+      <div style="margin-top:8px"><a class="knopf" target="_blank" rel="noopener" id="shopAuf">Shop öffnen</a></div>
+    </div></div>
+    <div class="status" id="shopStatus"></div>
+  </section>
+
+  <!-- 6. Angebote -->
+  <section class="schirm nichtdruck" id="reiter-angebote">
+    <h2>Das ist gerade günstig</h2>
+    <div class="zeile"><label class="feld">Suchen<input type="text" id="aSuche" placeholder="z. B. Schnitzel, Käse, Joghurt"></label></div>
+    <div class="chips" id="aKat"></div>
+    <div id="aListe" style="margin-top:8px"></div>
+  </section>
+</main>
+
+<!-- Feststehende Leiste -->
+<div class="leiste nichtdruck" id="leiste" hidden>
+  <div class="sendeblatt" id="sendeblatt" hidden>
+    <div class="sendeZeile"><b>Liste schicken</b>
+      <a class="knopf" id="wa" target="_blank" rel="noopener">WhatsApp</a><a class="knopf" id="mail">E-Mail</a><button class="knopf" id="kopieren" type="button">Kopieren</button><button class="knopf" id="teilenNativ" type="button" hidden>Teilen …</button></div>
+  </div>
+  <div class="leisteInnen">
+    <button class="leisteInfo" type="button" data-weiter="wagen"><b id="bSumme">0,00 €</b><span id="bLuft"></span></button>
+    <button class="knopf voll gross" id="teilen" type="button">Liste schicken</button>
+  </div>
+</div>
+
+<script>
+const DATEN=__DATEN__;
+</script>
+<script>
+(function(){
+'use strict';
+const ITEMS=DATEN.items, BASIS=DATEN.basis, STAND=DATEN.stand, SORTIMENT=DATEN.sortiment||DATEN.stand;
+const $=id=>document.getElementById(id);
+const eur=n=>n.toLocaleString('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2})+' €';
+const nz=s=>s.toLowerCase().replace(/ä/g,'ae').replace(/ö/g,'oe').replace(/ü/g,'ue').replace(/ß/g,'ss').replace(/[^a-z0-9 ]+/g,' ').replace(/\s+/g,' ').trim();
+const heute=new Date(); heute.setHours(0,0,0,0);
+
+/* ---------- Artikel vorbereiten ---------- */
+function zahl(s){return parseFloat(String(s).replace('.','').replace(',','.'))}
+const A=ITEMS.map((r,i)=>{
+  const t=r[0],fl=r[5];
+  const gk=(/€\s*\/\s*(kg|l)/.test(r[3]||''))?zahl(r[3]):0;
+  let bis=null; if(r[4]){const m=r[4].match(/(\d\d)\.(\d\d)\.(\d{4})/); if(m) bis=new Date(+m[3],+m[2]-1,+m[1]);}
+  return {i,t,c:r[1],p:r[2],g:r[3],gk,bis,aktiv:!!(bis&&bis>=heute),per100:!!(fl&1),bio:!!(fl&2),pf:!!(fl&4),u:r[6],
+    n:nz(t),w:nz(t).split(' '),gg:/gut guenstig/.test(nz(t)),
+    vegan:/vegan|pflanzlich|alpro|haferdrink|hafer drink|sojadrink|soja joghurt|sojajoghurt|planted|veggie|tofu|like meat|beyond|vemondo/i.test(t)};
+});
+function hash(u){let h=5381;for(let k=0;k<u.length;k++)h=((h<<5)+h+u.charCodeAt(k))|0;return (h>>>0).toString(36)}
+const BYHASH=new Map(); A.forEach(a=>{a.h=hash(a.u);BYHASH.set(a.h,a.i)});
+const STAMM=DATEN.stamm.map(s=>({k:s.k,i:s.i,m:s.m})); const STAMMSET=new Set(STAMM.map(s=>s.i));
+const STAMMWORTE=new Map(STAMM.map(s=>[s.i,nz(s.k).split(' ')]));
+
+/* ---------- Suche ---------- */
+const SYN={jogurt:['joghurt'],hack:['hackfleisch'],nudeln:['nudeln','spaghetti','penne','fusilli'],broetchen:['broetchen','brötchen'],
+  kaffee:['kaffee','caffe','bohnen'],kaese:['kaese'],wuerstchen:['wuerstchen','wiener'],tomate:['tomaten'],kartoffel:['kartoffeln'],
+  zwiebel:['zwiebeln'],ei:['eier'],gurke:['salatgurken','gurke'],schnitzel:['schnitzel'],milch:['vollmilch','milch'],oel:['oel','pflanzenoel','rapsoel']};
+function varianten(t){const v=new Set([t]);if(t.length>=5){v.add(t.replace(/(en|n|e|s)$/,''));}if(SYN[t])SYN[t].forEach(x=>v.add(nz(x)));return [...v].filter(Boolean)}
+function suche(q,max,nurAngebot){
+  const tok=nz(q).split(' ').filter(Boolean); if(!tok.length)return [];
+  const vs=tok.map(varianten), bio=tok.includes('bio'), veg=tok.includes('vegan');
+  const res=[];
+  for(const a of A){
+    if(nurAngebot&&!a.aktiv)continue;
+    let s=0,ok=true;
+    for(const v of vs){
+      let best=0;
+      for(const x of v){
+        for(const w of a.w){ if(w===x){best=Math.max(best,10);break} if(x.length>=4&&w.endsWith(x)){best=Math.max(best,8)} else if(w.startsWith(x)){best=Math.max(best,5)} }
+        if(!best&&x.length>=5&&a.n.includes(x))best=3;
+      }
+      if(!best){ok=false;break} s+=best;
+    }
+    if(!ok)continue;
+    if(STAMMSET.has(a.i)){s+=60;const lw=STAMMWORTE.get(a.i);if(vs.every(v=>v.some(x=>lw.includes(x))))s+=30}
+    if(a.aktiv)s+=25;
+    if(a.gg)s+=12;
+    if(a.bio&&!bio)s-=8;
+    if(a.w.some(w=>w==='natur'||w==='original'||w==='classic'||w==='ungesuesst'||w==='mild'))s+=3;
+    if(veg&&a.vegan)s+=20;
+    s-=a.t.length/25;
+    res.push([s,a]);
+  }
+  res.sort((x,y)=>y[0]-x[0]);
+  return res.slice(0,max||8).map(x=>x[1]);
+}
+
+/* ---------- Mengen und Preise ---------- */
+function packKg(t){const m=t.match(/(\d+(?:,\d+)?)\s*(kg|g|ml|l)\b/i);if(!m)return 0;let v=zahl(m[1]);const e=m[2].toLowerCase();
+  if(e==='g'||e==='ml')v/=1000;return v}
+function mengeFuer(a,wz,eh){
+  let q=wz==null?1:wz;
+  if(a.per100){
+    if(eh==='kg')return q; if(eh==='pfund')return q/2;
+    return q*(packKg(a.t)||1);
+  }
+  const pk=packKg(a.t);
+  const sm=a.t.match(/(\d+)\s*St(?:ü|ue)ck/i); // z. B. „Eier 10 Stück“: „10 Eier“ sind 1 Packung
+  if(!eh&&sm&&+sm[1]>1&&q>=+sm[1])return Math.max(1,Math.ceil(q/+sm[1]-1e-9));
+  if(eh==='kg'&&pk)return Math.max(1,Math.ceil(q/pk-1e-9));
+  if(eh==='l'&&pk)return Math.max(1,Math.ceil(q/pk-1e-9));
+  if(eh==='pfund'&&pk)return Math.max(1,Math.ceil(q/2/pk-1e-9));
+  return Math.max(1,Math.round(q));
+}
+const einzel=a=>a.per100?(a.gk||a.p*10):a.p;
+const zeilenSumme=(a,q)=>einzel(a)*q;
+const eh=a=>a.per100?'kg':'×';
+const schritt=a=>a.per100?0.5:1;
+
+/* ---------- Eingabe verstehen ---------- */
+const WZ={ein:1,eine:1,einen:1,einem:1,einmal:1,zwei:2,zwo:2,zweimal:2,drei:3,dreimal:3,vier:4,fuenf:5,fünf:5,sechs:6,sieben:7,acht:8,neun:9,zehn:10,elf:11,zwoelf:12,zwölf:12,dutzend:12,
+  zwanzig:20,dreissig:30,dreißig:30,halbes:0.5,halbe:0.5,halb:0.5,anderthalb:1.5};
+const EINH={kilo:'kg',kg:'kg',kilogramm:'kg',pfund:'pfund',liter:'l',l:'l',packung:'x',packungen:'x',pack:'x',paket:'x',pakete:'x',stueck:'x',stück:'x',stk:'x',sack:'x',saecke:'x',säcke:'x',kasten:'x',kisten:'x',kiste:'x',dose:'x',dosen:'x',flasche:'x',flaschen:'x',becher:'x',mal:'x',x:'x'};
+const STOP=new Set(['von','vom','den','der','die','das','dem','bitte','etwas','noch','auch','mal','so','ca','circa','ungefähr','ungefaehr']);
+function zerlege(text){
+  let t=text.replace(/\n+/g,',').replace(/;/g,',');
+  t=t.replace(/\s+(und dann|und noch|und|dann|außerdem|ausserdem)\s+/gi,',');
+  return t.split(',').map(s=>s.trim()).filter(Boolean);
+}
+function wunsch(fr){
+  const tk=fr.split(/\s+/); let wz=null,e=null,i=0;
+  const num=x=>{x=x.toLowerCase().replace(/x$/,'');if(/^\d+([.,]\d+)?$/.test(x))return zahl(x);return WZ[x]!==undefined?WZ[x]:null};
+  let n=num(tk[0]);
+  if(n!==null){wz=n;i=1;
+    if(/^\d+x$/i.test(tk[0]))e='x';
+    if(tk[i]&&/^halb/i.test(tk[i])){wz=wz*0.5;i++}
+    if(tk[i]&&EINH[tk[i].toLowerCase()]){e=EINH[tk[i].toLowerCase()];i++}
+  }else if(/^halb/i.test(tk[0])){wz=0.5;i=1;if(tk[1]&&EINH[tk[1].toLowerCase()]){e=EINH[tk[1].toLowerCase()];i=2}}
+  const term=tk.slice(i).filter(w=>!STOP.has(w.toLowerCase())).join(' ');
+  return {roh:fr,wz,e,term:term||fr};
+}
+
+/* ---------- Zustand ---------- */
+let LISTE=[]; // {id, q, roh, erl}
+let lz=false,shopK=false,shopO=false; try{lz=localStorage.getItem('bh_lz')==='1'}catch(e){}
+function stufen(){
+  [['nr1',lz,'1'],['nr2',shopK,'2'],['nr3',shopO,'3']].forEach(([id,ok,n])=>{const e=$(id);e.classList.toggle('fertig',ok);e.textContent=ok?'✓':n});
+  const k=$('shopKopieren');k.className='knopf'+(shopK?' voll':'');k.textContent=shopK?'Kopiert ✓':'Liste für den Shop kopieren';
+  $('shopAuf').className='knopf'+(shopO?' voll':'');
+  const z=$('lzFertig');z.className='knopf klein'+(lz?' voll':'');z.textContent=lz?'Eingerichtet ✓':'Hab ich schon eingerichtet';
+}
+let SET={schiff:'',personen:8,proPerson:75};
+function speichern(){try{localStorage.setItem('bh_liste',JSON.stringify(LISTE));localStorage.setItem('bh_set',JSON.stringify(SET))}catch(e){}}
+function laden(){try{LISTE=JSON.parse(localStorage.getItem('bh_liste')||'[]');Object.assign(SET,JSON.parse(localStorage.getItem('bh_set')||'{}'))}catch(e){LISTE=[]}
+  LISTE=LISTE.filter(p=>p.id==null||A[p.id])}
+function fuegeHinzu(a,q,roh){
+  const ex=LISTE.find(p=>p.id===a.i);
+  if(ex){ex.q=+(ex.q+q).toFixed(2)}else LISTE.push({id:a.i,q,roh:roh||a.t,erl:false});
+}
+
+/* ---------- Anzeige ---------- */
+function badges(a){
+  let h='';
+  if(a.aktiv)h+=`<span class="badge ang">Angebot bis ${String(a.bis.getDate()).padStart(2,'0')}.${String(a.bis.getMonth()+1).padStart(2,'0')}.</span>`;
+  else if(a.bis)h+='<span class="badge info">Angebot vorbei, Preis prüfen</span>';
+  if(STAMMSET.has(a.i))h+='<span class="badge stamm">★ Stamm</span>';
+  if(a.vegan)h+='<span class="badge veg">vegan?</span>';
+  if(a.bio)h+='<span class="badge info">Bio</span>';
+  if(a.pf)h+='<span class="badge info">+ Pfand</span>';
+  if(a.per100)h+='<span class="badge info">nach Gewicht</span>';
+  return h;
+}
+function preisText(a){return a.per100?`${eur(einzel(a))}/kg`:eur(a.p)+(a.g?` · ${a.g}`:'')}
+const offen=new Set(), mehr=new Set();
+const ABT=['Obst & Gemüse','Milch, Eier & Käse','Fleisch, Wurst & Fisch','Brot & Backen','Nudeln, Reis, Soßen & Gewürze','Konserven & Fertiges','Frühstück & Süßes','Getränke & Kaffee','Pflanzliches','Tiefgekühltes'];
+const ABTTEST=[[9,/TK\/|^Eis\//],[8,/^Pflanzliche/],[0,/^(Obst|Gemuese|Vorgepackte-Ware)\//],[1,/^(Eier-Kaese-Molkerei|Joghurt-Desserts|Kaese)/],[2,/^(Fleisch|Fleisch-Wurst-Fisch|Wurst-Aufschnitt)/],
+  [3,/^Brot-Backzutaten/],[4,/^Sossen|Nudeln|Reis|Pasta/],[5,/^(Konserven|Fertiggerichte|Convenience)/],[6,/^(Rund-um|Kuchen|Knabber)/],[7,/^(Wasser|Heiss)/]];
+function abtIndex(a){const t=ABTTEST.find(x=>x[1].test(a.c));return t?t[0]:ABT.length}
+function abtName(j){return j<ABT.length?ABT[j]:'Sonstiges'}
+function zeigeListe(){
+  const el=$('liste'); let sum=0;
+  if(!LISTE.length){el.innerHTML='<div class="leer">Noch leer. Sag oder tippe unter „Wünsche“, was ihr braucht.</div>'}
+  else{
+    const ord=LISTE.map((p,k)=>({p,k,j:p.id==null?-1:abtIndex(A[p.id])})).sort((x,y)=>x.j-y.j||x.k-y.k);
+    let lastJ=null, h='';
+    ord.forEach(({p,k,j})=>{
+      if(j!==lastJ){h+=`<div class="gruppeKopf" style="margin-top:${lastJ===null?0:12}px">${j<0?'Nicht gefunden':esc(abtName(j))}</div>`;lastJ=j}
+      if(p.id==null){
+        h+=`<div class="posten z"><div class="zl nichtGef"><div class="nm"><b>${esc(p.roh)}</b> <span class="wunsch">Dazu habe ich nichts gefunden.</span></div>
+          <div class="rechts"><a class="knopf klein" target="_blank" rel="noopener" href="${BASIS}/index.php?cl=search&searchparam=${encodeURIComponent(p.roh)}">Im Shop suchen</a>
+          <button class="knopf klein warnk" data-weg="${k}">Entfernen</button></div></div></div>`;
+        return;
+      }
+      const a=A[p.id], s=zeilenSumme(a,p.q); sum+=s;
+      const q=a.per100?p.q.toLocaleString('de-DE',{maximumFractionDigits:2})+' kg':p.q.toLocaleString('de-DE',{maximumFractionDigits:2})+' ×';
+      let alt='';
+      if(offen.has(p.id)){
+        const al=suche(p.roh,8).filter(x=>x.i!==p.id);
+        alt=`<div class="alt">${al.length?al.map(x=>`<div class="altZeile" data-tausch="${k}:${x.i}"><span>${esc(x.t)} ${badges(x)}</span><span>${preisText(x)}</span></div>`).join(''):'<div class="leer">Keine weiteren Treffer.</div>'}
+          <div style="margin-top:6px"><input type="text" placeholder="anders suchen …" data-neusuche="${k}"></div></div>`;
+      }
+      const men=mehr.has(p.id)?`<div class="mehrMenue"><button class="knopf klein" data-andere="${p.id}">Anderer Artikel</button>
+          <a class="knopf klein" target="_blank" rel="noopener" href="${BASIS}${a.u}">Im Shop ansehen</a>
+          <button class="knopf klein warnk" data-weg="${k}">Aus dem Wagen</button></div>`:'';
+      const wt=p.roh&&nz(p.roh)!==nz(a.t)?' title="gewünscht: '+esc(p.roh)+'"':'';
+      h+=`<div class="posten z"><div class="zl"><div class="nm"${wt}><b>${esc(a.t)}</b> ${badges(a)}</div>
+        <div class="pr">${preisText(a)}</div>
+        <span class="menge"><button data-mm="${k}" aria-label="weniger">−</button><span>${q}</span><button data-mp="${k}" aria-label="mehr">+</button></span>
+        <div class="summe">${eur(s)}</div>
+        <button class="knopf klein pkt" data-mehr="${p.id}" aria-label="mehr Möglichkeiten">⋯</button></div>${men}${alt}</div>`;
+    });
+    el.innerHTML=h;
+  }
+  $('listeSumme').textContent=eur(sum);
+  const budget=SET.personen*SET.proPerson, rest=budget-sum, n=LISTE.length;
+  $('kPos').textContent=n;
+  const luft=rest>=0?`Noch ${eur(rest)} Luft bei ${Math.round(budget).toLocaleString('de-DE')} € Budget`:`${eur(-rest)} über dem Budget von ${Math.round(budget).toLocaleString('de-DE')} €`;
+  $('luftText').textContent=luft; $('luftText').style.color=rest<0?'var(--ziegel)':'';
+  $('bSumme').textContent=eur(sum)+' · '+n+(n===1?' Artikel':' Artikel');
+  const bl=$('bLuft'); bl.textContent=rest>=0?`noch ${eur(rest)} Luft`:`${eur(-rest)} über Budget`; bl.className=rest<0?'zuviel':'';
+  $('leiste').hidden=!n; if(!n)$('sendeblatt').hidden=true;
+  const pr=budget>0?Math.min(100,sum/budget*100):0; const b=$('balken'); b.style.width=pr+'%'; b.className=sum>budget?'zuviel':'';
+  shopK=false; stufen(); zeigeFehlt(); speichern(); aktualisiereLinks();
+}
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+function chipHtml(e,veg){
+  const p=LISTE.find(x=>x.id===e.i);
+  if(!p)return `<span class="chip${veg?' vegan':''}" data-stamm="${e.i}" data-k="${esc(e.k)}" title="Zuletzt etwa ${e.m} ×">${esc(e.k)}</span>`;
+  const a=A[e.i], q=p.q.toLocaleString('de-DE',{maximumFractionDigits:2})+(a.per100?' kg':' ×');
+  return `<span class="chip an"><span data-sweg="${e.i}" style="cursor:pointer" title="Wieder raus">✓ ${esc(e.k)}</span>
+    <button class="pm" data-smm="${e.i}" aria-label="weniger">−</button><span class="cq">${q}</span><button class="pm" data-smp="${e.i}" aria-label="mehr">+</button></span>`;
+}
+function zeigeFehlt(){
+  const gr=new Map();
+  STAMM.forEach(s=>{const j=abtIndex(A[s.i]);if(!gr.has(j))gr.set(j,[]);gr.get(j).push(s)});
+  $('fehlt').innerHTML=[...gr.keys()].sort((x,y)=>x-y).map(j=>`<div class="gruppe"><div class="gruppeKopf">${esc(abtName(j))}</div><div class="chips">${gr.get(j).map(s=>chipHtml(s,false)).join('')}</div></div>`).join('');
+  $('vegan').innerHTML=VEG.map(v=>chipHtml(v,true)).join('');
+}
+const VEGAN=[['Sojadrink','sojadrink'],['Haferdrink','haferdrink'],['Vegane Maultaschen','vegane maultaschen'],['Tofu','tofu'],['Veganes Hack','veganes hack'],['Vegane Mayonnaise','vegane mayonnaise'],['Veganer Pudding','vegan pudding'],['Veganer Aufschnitt','vegan aufschnitt']];
+let VEG=[];
+function zeigeVegan(){
+  VEG=VEGAN.map(v=>{const r=suche(v[1],6).sort((x,y)=>(y.vegan-x.vegan)||0)[0];return r?{k:v[0],i:r.i}:null}).filter(Boolean);
+}
+/* ---------- Teilen ---------- */
+function listeText(){
+  const mm=n=>n.toLocaleString('de-DE',{maximumFractionDigits:2});
+  const zl=[`🛒 Bestellliste${SET.schiff?' · '+SET.schiff:''} · ${SET.personen} Personen`,`Stand der Preise ${datum(STAND)}`];
+  let sum=0,lastJ=null;
+  const ord=LISTE.map(p=>({p,j:p.id==null?99:abtIndex(A[p.id])})).sort((x,y)=>x.j-y.j);
+  ord.forEach(({p,j})=>{
+    if(j!==lastJ){zl.push('');zl.push(j===99?'Nicht gefunden':abtName(j));lastJ=j}
+    if(p.id==null){zl.push(`• ${p.roh}`);return}
+    const a=A[p.id],s=zeilenSumme(a,p.q);sum+=s;
+    zl.push(`• ${mm(p.q)}${a.per100?' kg':' ×'} ${a.t} · ${eur(s)}`);
+  });
+  zl.push('');zl.push(`Summe ca. ${eur(sum)}`);
+  return zl.join('\n');
+}
+const datum=s=>{const m=s.match(/(\d{4})-(\d\d)-(\d\d)/);return m?`${m[3]}.${m[2]}.${m[1]}`:s};
+function aktualisiereLinks(){
+  const t=encodeURIComponent(listeText());
+  $('wa').href='https://wa.me/?text='+t;
+  $('mail').href='mailto:?subject='+encodeURIComponent('Bestellliste Schiffsküche')+'&body='+t;
+  handyLinks();
+}
+function handyText(){
+  const zl=zerlege($('hText').value);
+  if(!zl.length)return '';
+  const d=new Date();const dat=String(d.getDate()).padStart(2,'0')+'.'+String(d.getMonth()+1).padStart(2,'0')+'.';
+  return '🛒 Ideen für die Bestellung\n'+(SET.schiff?SET.schiff+' · ':'')+dat+'\n\n'+zl.map(x=>'• '+x).join('\n');
+}
+function handyLinks(){
+  const t=encodeURIComponent(handyText());
+  $('hWa').href='https://wa.me/?text='+t;
+  $('hMail').href='mailto:?subject='+encodeURIComponent('Ideen für die Bestellung')+'&body='+t;
+}
+function meld(id,txt){const e=$(id);e.textContent=txt;setTimeout(()=>{if(e.textContent===txt)e.textContent=''},5000)}
+async function kopiere(txt){
+  try{await navigator.clipboard.writeText(txt);return true}catch(e){
+    const ta=document.createElement('textarea');ta.value=txt;document.body.appendChild(ta);ta.select();
+    let ok=false;try{ok=document.execCommand('copy')}catch(x){} ta.remove();return ok}
+}
+/* ---------- Warenkorb im Shop füllen ---------- */
+/* Dieses Skript läuft als Lesezeichen auf der Shop-Seite. Es benutzt keine Variablen der App. */
+function FUELL(){
+ (async()=>{
+  const H='https://lueck-niebuell.edeka.shop';
+  if(location.origin!==H){alert('Bitte erst den Shop von EDEKA Lück öffnen:\n'+H+'\nund dann das Lesezeichen anklicken.');return}
+  let t='';try{t=await navigator.clipboard.readText()}catch(e){}
+  if(t.indexOf('BH2;')<0)t=prompt('Liste für den Shop einfügen (Zeile mit BH2;…):')||'';
+  const m=t.match(/BH2;[^\s]*/);
+  if(!m){alert('Keine Liste gefunden. In der Bestellhilfe erst „Liste für den Shop kopieren“ klicken.');return}
+  const items=(m[0].split(';')[2]||'').split('|').filter(Boolean).map(x=>{const k=x.indexOf('*');return {q:+x.slice(0,k),u:x.slice(k+1)}});
+  if(!items.length||!confirm(items.length+' Artikel in den Warenkorb legen?\nEs wird nichts bestellt.'))return;
+  const box=document.createElement('div');
+  box.style.cssText='position:fixed;z-index:99999;left:0;right:0;top:0;background:#0C1D14;color:#fff;padding:12px 16px;font:15px sans-serif;border-bottom:3px solid #B08D3C';
+  document.body.appendChild(box);
+  let ok=0,soll=0;const fehl=[];
+  for(let i=0;i<items.length;i++){
+    const it=items[i]; box.textContent='Bestellhilfe: Artikel '+(i+1)+' von '+items.length+' …';
+    try{
+      const doc=new DOMParser().parseFromString(await (await fetch(it.u,{credentials:'same-origin'})).text(),'text/html');
+      const f=[...doc.querySelectorAll('form')].find(f=>f.querySelector('input[name=fnc][value=tobasket]'));
+      if(!f)throw 0;
+      const p=new URLSearchParams();
+      f.querySelectorAll('input[type=hidden]').forEach(x=>{if(x.name)p.set(x.name,x.value)});
+      p.set('fnc','changeBasket');p.set('am',String(it.q));p.set('response','true');
+      const r=await fetch(H+'/index.php?',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded','X-Requested-With':'XMLHttpRequest'},body:p.toString(),credentials:'same-origin'});
+      if(!r.ok)throw 0; ok++; soll+=it.q;
+    }catch(e){fehl.push(decodeURIComponent(it.u.split('/').pop().replace('.html','')))}
+    await new Promise(r=>setTimeout(r,250));
+  }
+  let ist='?';
+  try{const h=await (await fetch(H+'/warenkorb/',{credentials:'same-origin'})).text();const mm=h.replace(/\s+/g,' ').match(/(\d+) Produkte? ausgewählt/);if(mm)ist=mm[1]}catch(e){}
+  box.textContent='Fertig: '+ok+' von '+items.length+' Artikeln eingetragen (Warenkorb: '+ist+' Stück). '+(fehl.length?'Nicht geklappt: '+fehl.join(', ')+'. ':'')+'Bitte den Warenkorb prüfen. Bestellt wird nur von dir.';
+  if(!fehl.length)setTimeout(()=>{location.href=H+'/warenkorb/'},3000);
+ })();
+}
+function shopText(){
+  const z=LISTE.filter(p=>p.id!=null).map(p=>{const a=A[p.id];return (a.per100?Math.round(p.q*10):Math.round(p.q))+'*'+a.u});
+  return 'BH2;'+STAND+';'+z.join('|');
+}
+
+/* ---------- Angebote ---------- */
+let aKat=null;
+const ANGBIS=(()=>{const z=new Map();A.filter(a=>a.aktiv).forEach(a=>{const k=a.bis.getTime();z.set(k,(z.get(k)||0)+1)});let b=0,n=0;z.forEach((v,k)=>{if(v>n){n=v;b=k}});if(!b)return '';const d=new Date(b);return String(d.getDate()).padStart(2,'0')+'.'+String(d.getMonth()+1).padStart(2,'0')+'.'})();
+function zeigeAngebote(){
+  const q=$('aSuche').value.trim();
+  let l=q?suche(q,60,true):A.filter(a=>a.aktiv&&(aKat===null||abtIndex(a)===aKat)).slice(0,80);
+  if(q&&aKat!==null)l=l.filter(a=>abtIndex(a)===aKat);
+  l.sort((x,y)=>x.t.localeCompare(y.t,'de'));
+  $('aKat').innerHTML=ABT.map((k,j)=>`<span class="chip${aKat===j?' an':''}" data-akat="${j}">${k}</span>`).join('');
+  const nA=A.filter(a=>a.aktiv).length;
+  $('aListe').innerHTML=(nA?'':'<div class="warn">Es gibt keine gültigen Angebote mehr. Neue Angebote kommen jeden Mittwoch früh automatisch; bis dahin die Preise im Shop prüfen.</div>')+
+    (l.length?l.map(a=>`<div class="posten"><div class="postenKopf"><div class="name"><b>${esc(a.t)}</b><div>${badges(a)}</div></div>
+      <div class="summe">${preisText(a)}</div><button class="knopf klein voll" data-add="${a.i}">+</button></div></div>`).join(''):'<div class="leer">Keine Treffer.</div>')+
+    `<div class="hinweis" style="margin-top:6px">${nA} gültige Angebote${ANGBIS?' (gültig bis '+ANGBIS+')':''}${l.length>=60||l.length>=80?' – nur die ersten angezeigt, bitte genauer suchen':''}.</div>`;
+}
+
+/* ---------- Sprache ---------- */
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+function macheMikro(btnId,taId,stId,trenner){
+  let rec=null,hoert=false; const btn=$(btnId);
+  const aus=()=>{hoert=false;btn.textContent='🎤'};
+  return function(){
+    if(!SR){meld(stId,'Dieses Gerät hat keine Spracheingabe im Browser. Nimm das Mikrofon der Tastatur.');return}
+    if(hoert){hoert=false;try{rec.stop()}catch(e){}aus();return}
+    rec=new SR(); rec.lang='de-DE'; rec.interimResults=false; rec.continuous=false;
+    rec.onresult=ev=>{let t='';for(let k=ev.resultIndex;k<ev.results.length;k++)if(ev.results[k].isFinal)t+=ev.results[k][0].transcript+' ';
+      if(t.trim()){const e=$(taId);e.value=(e.value.trim()?e.value.trim()+trenner:'')+t.trim();e.dispatchEvent(new Event('input'))}};
+    rec.onerror=ev=>{meld(stId,ev.error==='not-allowed'?'Mikrofon nicht erlaubt. Bitte im Browser freigeben.':'Spracherkennung: '+ev.error);aus()};
+    rec.onend=()=>{if(hoert){try{rec.start()}catch(e){aus()}}else aus()};
+    hoert=true; btn.textContent='⏹'; $(stId).textContent='Ich höre zu … sprich deine Wünsche.';
+    try{rec.start()}catch(e){aus()}
+  };
+}
+
+/* ---------- Ereignisse ---------- */
+function verstehen(){
+  const t=$('eingabe').value.split('\n').filter(l=>!/🛒/.test(l)&&!/^\s*([^•\n]*·\s*)?\d\d\.\d\d\.\s*$/.test(l)&&!/^\s*Stand der Preise/.test(l)).map(l=>l.replace(/^\s*[•\-*]\s*/,'')).join('\n').trim(); if(!t)return;
+  let ok=0,nicht=0;
+  zerlege(t).forEach(fr=>{
+    const w=wunsch(fr), r=suche(w.term,1);
+    if(!r.length){LISTE.push({id:null,q:1,roh:w.term,erl:false});nicht++;return}
+    fuegeHinzu(r[0],mengeFuer(r[0],w.wz,w.e),w.term);ok++;
+  });
+  $('eingabe').value='';
+  zeigeListe();
+  meld('mikroStatus',`${ok} Artikel hinzugefügt${nicht?`, ${nicht} nicht gefunden`:''}. Schau in den Wagen.`);
+}
+document.addEventListener('click',async ev=>{
+  const t=ev.target.closest('[data-reiter],[data-weiter],[data-mehr],[data-smm],[data-smp],[data-sweg],[data-mm],[data-mp],[data-weg],[data-andere],[data-tausch],[data-stamm],[data-add],[data-akat]'); if(!t)return;
+  const d=t.dataset;
+  if(d.reiter!==undefined)reiter(d.reiter);
+  else if(d.weiter!==undefined){reiter(d.weiter);scrollTo(0,0)}
+  else if(d.mehr!==undefined){const i=+d.mehr;mehr.has(i)?mehr.delete(i):mehr.add(i);zeigeListe()}
+  else if(d.smm!==undefined){const k=LISTE.findIndex(x=>x.id===+d.smm),p=LISTE[k];p.q=+(p.q-schritt(A[p.id])).toFixed(2);if(p.q<=0)LISTE.splice(k,1);zeigeListe()}
+  else if(d.smp!==undefined){const p=LISTE.find(x=>x.id===+d.smp);p.q=+(p.q+schritt(A[p.id])).toFixed(2);zeigeListe()}
+  else if(d.sweg!==undefined){const k=LISTE.findIndex(x=>x.id===+d.sweg);if(k>=0)LISTE.splice(k,1);zeigeListe()}
+  else if(d.mm!==undefined){const p=LISTE[+d.mm],a=A[p.id],s=schritt(a);p.q=+(p.q-s).toFixed(2);if(p.q<=0)LISTE.splice(+d.mm,1);zeigeListe()}
+  else if(d.mp!==undefined){const p=LISTE[+d.mp],a=A[p.id];p.q=+(p.q+schritt(a)).toFixed(2);zeigeListe()}
+  else if(d.weg!==undefined){LISTE.splice(+d.weg,1);zeigeListe()}
+  else if(d.andere!==undefined){const i=+d.andere;offen.has(i)?offen.delete(i):offen.add(i);zeigeListe()}
+  else if(d.tausch!==undefined){const [k,i]=d.tausch.split(':').map(Number);const p=LISTE[k];offen.delete(p.id);
+    const ex=LISTE.findIndex((x,j)=>x.id===i&&j!==k);const roh=p.roh;
+    if(ex>=0){LISTE[ex].q+=p.q;LISTE.splice(k,1)}else{p.id=i}zeigeListe()}
+  else if(d.stamm!==undefined){fuegeHinzu(A[+d.stamm],1,t.dataset.k||null);zeigeListe()}
+  else if(d.add!==undefined){fuegeHinzu(A[+d.add],1,null);zeigeListe();meld('listeStatus','Zur Liste hinzugefügt.')}
+  else if(d.akat!==undefined){const j=+d.akat;aKat=(aKat===j)?null:j;zeigeAngebote()}
+});
+document.addEventListener('change',ev=>{
+  const t=ev.target; if(t.dataset&&t.dataset.erl!==undefined){LISTE[+t.dataset.erl].erl=t.checked;zeigeListe()}
+});
+document.addEventListener('keydown',ev=>{
+  const t=ev.target;
+  if(t.dataset&&t.dataset.neusuche!==undefined&&ev.key==='Enter'){
+    const k=+t.dataset.neusuche,p=LISTE[k],r=suche(t.value,1)[0];
+    if(r){offen.delete(p.id);p.id=r.i;p.roh=t.value;zeigeListe()}else meld('listeStatus','Nichts gefunden.')}
+});
+$('mikro').addEventListener('click',macheMikro('mikro','eingabe','mikroStatus',', '));
+$('hMikro').addEventListener('click',macheMikro('hMikro','hText','hStatus','\n'));
+$('hText').addEventListener('input',handyLinks);
+$('hLeeren').addEventListener('click',()=>{$('hText').value='';handyLinks()});
+$('hKop').addEventListener('click',async()=>{const ok=await kopiere(handyText());const k=$('hKop');k.textContent=ok?'Kopiert ✓':'Kopieren nicht möglich';setTimeout(()=>{k.textContent='Kopieren'},2500)});
+$('verstehen').addEventListener('click',verstehen);
+$('leeren').addEventListener('click',()=>{$('eingabe').value=''});
+$('teilen').addEventListener('click',()=>{const b=$('sendeblatt');b.hidden=!b.hidden;if(navigator.share)$('teilenNativ').hidden=false});
+$('teilenNativ').addEventListener('click',async()=>{try{await navigator.share({title:'Bestellliste Schiffsküche',text:listeText()})}catch(e){}});
+$('kopieren').addEventListener('click',async()=>{const ok=await kopiere(listeText());const k=$('kopieren');k.textContent=ok?'Kopiert ✓':'Kopieren nicht möglich';setTimeout(()=>{k.textContent='Kopieren'},2500)});
+$('alleWeg').addEventListener('click',()=>{if(LISTE.length&&confirm('Wirklich die ganze Liste löschen?')){LISTE=[];zeigeListe()}});
+$('shopKopieren').addEventListener('click',async()=>{
+  if(!LISTE.some(p=>p.id!=null)){meld('shopStatus','Der Wagen ist leer.');return}
+  const n=LISTE.filter(p=>p.id!=null).length;
+  if(await kopiere(shopText())){shopK=true;stufen();meld('shopStatus',`${n} Artikel kopiert. Jetzt den Shop öffnen und das Lesezeichen anklicken.`)}
+  else meld('shopStatus','Kopieren nicht möglich.');
+});
+$('shopAuf').addEventListener('click',()=>{shopO=true;stufen()});
+$('lzFertig').addEventListener('click',()=>{lz=!lz;try{localStorage.setItem('bh_lz',lz?'1':'0')}catch(e){}stufen()});
+$('shopAuf').href=BASIS+'/';
+const skriptText='javascript:'+encodeURIComponent('('+FUELL.toString()+')()');
+$('lesezeichen').href=skriptText;
+$('lesezeichen').addEventListener('click',ev=>{ev.preventDefault();meld('shopStatus','Nicht hier klicken: den Knopf mit der Maus in die Lesezeichen-Leiste ziehen.')});
+$('skriptKopieren').addEventListener('click',async()=>meld('shopStatus',(await kopiere(skriptText))?'Skript kopiert.':'Kopieren nicht möglich.'));
+$('aSuche').addEventListener('input',zeigeAngebote);
+['schiff','personen','proPerson'].forEach(id=>$(id).addEventListener('input',()=>{
+  SET.schiff=$('schiff').value; SET.personen=Math.max(1,+$('personen').value||1); SET.proPerson=Math.max(1,+$('proPerson').value||1); zeigeListe();}));
+
+/* ---------- Reiter ---------- */
+const REITER=['wer','wuensche','fehlt','wagen','shop','angebote'];
+function reiter(n){
+  REITER.forEach(r=>{$('reiter-'+r).classList.toggle('an',r===n)});
+  document.querySelectorAll('#reiterLeiste button').forEach(b=>b.setAttribute('aria-current',b.dataset.reiter===n?'true':'false'));
+  $('sendeblatt').hidden=true;
+  try{sessionStorage.setItem('bh_reiter',n)}catch(e){}
+}
+/* ---------- Start ---------- */
+laden();
+$('schiff').value=SET.schiff||''; $('personen').value=SET.personen; $('proPerson').value=SET.proPerson;
+$('stand').textContent=`Angebote vom ${datum(STAND)}${ANGBIS?', gültig bis '+ANGBIS:', keine gültigen mehr'} · Sortiment vom ${datum(SORTIMENT)}, ${A.length.toLocaleString('de-DE')} Artikel · EDEKA Lück Niebüll`;
+const tage=Math.round((heute-new Date(STAND))/86400000);
+if(tage>7){const w=$('alt');w.style.display='block';w.textContent=`Achtung: Die Angebote sind ${tage} Tage alt. Angebote können abgelaufen sein. Die Angebote werden jeden Mittwoch früh von selbst neu geholt; bitte vor dem Bestellen die Preise im Shop prüfen.`}
+if(!SR)$('mikro').title='Keine Spracheingabe in diesem Browser; Tastatur-Mikrofon nutzen';
+zeigeVegan(); zeigeListe(); zeigeAngebote();
+let r0='wer';try{r0=sessionStorage.getItem('bh_reiter')||(LISTE.length?'wagen':'wer')}catch(e){} reiter(REITER.includes(r0)?r0:'wer');
+})();
+</script>
+<script>if("serviceWorker" in navigator&&location.protocol==="https:")navigator.serviceWorker.register("sw.js").catch(function(){});</script>
+</body>
+</html>

@@ -1,0 +1,46 @@
+name: Angebote aktualisieren
+
+# Bestellt wird meist Mittwoch und Donnerstag. Deshalb holt dieser Lauf jeden Mittwoch früh die aktuellen
+# Angebote aus dem Shop (nur die Angebotsseiten, gut 6 Minuten) und baut die App neu.
+# Die Wiederholungen greifen nur, falls der erste Lauf gescheitert ist (sonst: "Nichts Neues").
+on:
+  schedule:
+    - cron: '0 3 * * 3'   # Mittwoch 03:00 UTC = 4:00 Uhr (Winter) bzw. 5:00 Uhr (Sommer)
+    - cron: '0 6 * * 3'   # Wiederholung Mittwoch
+    - cron: '0 3 * * 4'   # Wiederholung Donnerstag
+  workflow_dispatch:
+    inputs:
+      erzwingen:
+        description: 'Auch ohne neue Angebote neu holen'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: preise
+  cancel-in-progress: false
+
+jobs:
+  aktualisieren:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Angebote holen und App bauen
+        run: python -I -X utf8 aktualisieren.py ${{ inputs.erzwingen && '--erzwingen' || '' }}
+      - name: Veröffentlichen, falls neu
+        run: |
+          if [ -n "$(git status --porcelain index.html stand.json)" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add index.html stand.json
+            git commit -m "Angebote aktualisiert ($(date -u +%F))"
+            git push
+          else
+            echo "Nichts zu veröffentlichen."
+          fi
