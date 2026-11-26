@@ -3,12 +3,12 @@
 # Jeder PC hat eine eigene Kopie dieses Repos (nicht im OneDrive-Ordner).
 # Ablauf: neuesten Stand holen (git pull) -> aktualisieren.py -> bei Aenderung hochladen.
 # Hat ein anderer PC die Angebote dieser Woche schon geholt, steht das im geholten stand.json,
-# und aktualisieren.py tut nichts. Protokoll: %LOCALAPPDATA%\Bestellhilfe\lauf.log
+# und aktualisieren.py tut nichts. Protokoll: lauf.log im Ordner ueber dem Repo
+# (z. B. C:\Users\<name>\Bestellhilfe-Abruf\lauf.log).
 
 $ErrorActionPreference = 'Continue'
 $hier = $PSScriptRoot
-$logOrdner = Join-Path $env:LOCALAPPDATA 'Bestellhilfe'
-New-Item -ItemType Directory -Force $logOrdner | Out-Null
+$logOrdner = Split-Path $hier
 $log = Join-Path $logOrdner 'lauf.log'
 
 function Schreib($text) { Add-Content -Path $log -Value ("{0} {1}" -f (Get-Date -Format 'yyyy-MM-dd HH:mm:ss'), $text) -Encoding UTF8 }
