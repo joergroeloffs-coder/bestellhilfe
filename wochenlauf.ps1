@@ -7,6 +7,7 @@
 # (z. B. C:\Users\<name>\Bestellhilfe-Abruf\lauf.log).
 
 $ErrorActionPreference = 'Continue'
+[Console]::OutputEncoding = [Text.Encoding]::UTF8
 $hier = $PSScriptRoot
 $logOrdner = Split-Path $hier
 $log = Join-Path $logOrdner 'lauf.log'
