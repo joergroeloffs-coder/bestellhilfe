@@ -179,6 +179,11 @@ main{padding-bottom:110px}
 .hKnoepfe .knopf{flex:1 1 auto;justify-content:center;padding-left:6px;padding-right:6px}
 .hKnoepfe .knopf.klein{flex:0 0 auto}
 .hFest .status{min-height:16px;margin-top:3px;font-size:12px}
+.hKatAuf{display:block;width:100%;text-align:left;margin-top:8px;padding:6px 0;border:0;background:transparent;font:inherit;font-size:16px;font-weight:600;color:var(--watt);cursor:pointer}
+.hKatAuf .pfeil{display:inline-block;width:1em;font-size:13px;transition:transform .15s}
+.hKatAuf[aria-expanded="true"] .pfeil{transform:rotate(90deg)}
+.hFest #hKat{margin:2px 0 6px}
+.hFest #hKat[hidden]{display:none}
 .hProspekt summary{font-size:16px;font-weight:600}
 @media(max-width:700px){nav,main,.leiste,.stand{display:none!important}.handyWrap{display:block}header{position:static}.titel{font-size:18px}}
 @media print{header,.nichtdruck,.postenFuss,.alt,.leiste{display:none!important}body{background:#fff}section{border:0}}
@@ -215,14 +220,13 @@ main{padding-bottom:110px}
       <button class="knopf" id="hKop" type="button">Kopieren</button>
       <button class="knopf klein" id="hLeeren" type="button">leeren</button>
     </div>
+    <button class="hKatAuf" id="hKatAuf" type="button" aria-expanded="false"><span class="pfeil">▶</span> Angebote der Woche</button>
+    <div class="chips" id="hKat" hidden></div>
     <div class="status" id="hStatus"></div>
   </div>
-  <details class="hProspekt" id="hProspekt" open>
-    <summary>Angebote der Woche</summary>
-    <div class="hinweis" id="hPStand" style="margin-top:6px"></div>
-    <div class="chips" id="hKat"></div>
+  <div class="hProspekt" id="hProspekt">
     <div class="prospekt eng" id="hListe"></div>
-  </details>
+  </div>
 </section></div>
 
 <main>
@@ -663,9 +667,15 @@ function zeigeAngebote(){
 let hKat=null;
 function zeigeHandyProspekt(){
   const nA=A.filter(a=>a.aktiv).length;
-  $('hPStand').textContent=nA?`${nA} Angebote${ANGBIS?', gültig bis '+ANGBIS:''} Antippen = kommt in deine Ideen, mit dem Hinweis „Angebot“.`:'Gerade keine gültigen Angebote.';
   $('hKat').innerHTML=ABT.map((k,j)=>`<span class="chip${hKat===j?' an':''}" data-hkat="${j}">${k}</span>`).join('');
-  $('hListe').innerHTML=prospektHtml(angebotsListe('',hKat),true,true);
+  $('hListe').innerHTML=nA?prospektHtml(angebotsListe('',hKat),true,true):'<div class="leer">Gerade keine gültigen Angebote.</div>';
+}
+function hKatZeigen(auf){$('hKat').hidden=!auf;$('hKatAuf').setAttribute('aria-expanded',auf?'true':'false')}
+$('hKatAuf').addEventListener('click',()=>hKatZeigen($('hKat').hidden));
+function hKatWaehlen(j){
+  hKat=(hKat===j)?null:j; zeigeHandyProspekt(); hKatZeigen(false);
+  const ziel=$('hListe').getBoundingClientRect().top+scrollY-document.querySelector('.hFest').offsetHeight-6;
+  if(scrollY>ziel)scrollTo(0,ziel);
 }
 function handyAngebot(a){
   const name=a.t.replace(/,/g,' ').replace(/\s+und\s+/gi,' & ').replace(/\s+/g,' ').trim()+' (Angebot)';
@@ -727,7 +737,7 @@ document.addEventListener('click',async ev=>{
   else if(d.add!==undefined){const a=A[+d.add];fuegeHinzu(a,a.per100?(packKg(a.t)||1):1,null);zeigeListe();aktualisiereKachel(+d.add);meld('listeStatus','Zur Liste hinzugefügt.')}
   else if(d.akat!==undefined){const j=+d.akat;aKat=(aKat===j)?null:j;zeigeAngebote()}
   else if(d.hang!==undefined){handyAngebot(A[+d.hang])}
-  else if(d.hkat!==undefined){const j=+d.hkat;hKat=(hKat===j)?null:j;zeigeHandyProspekt()}
+  else if(d.hkat!==undefined){hKatWaehlen(+d.hkat)}
 });
 document.addEventListener('change',ev=>{
   const t=ev.target; if(t.dataset&&t.dataset.erl!==undefined){LISTE[+t.dataset.erl].erl=t.checked;zeigeListe()}
@@ -775,7 +785,6 @@ function reiter(n){
   if(n==='angebote')zeigeAngebote();
   try{sessionStorage.setItem('bh_reiter',n)}catch(e){}
 }
-$('hProspekt').addEventListener('toggle',()=>{if($('hProspekt').open&&!$('hListe').children.length)zeigeHandyProspekt()});
 /* ---------- Start ---------- */
 laden();
 $('schiff').value=SET.schiff||''; $('personen').value=SET.personen; $('proPerson').value=SET.proPerson;
