@@ -13,6 +13,7 @@ import html, json, os, re, sys, time, urllib.request
 BASIS = "https://lueck-niebuell.edeka.shop"
 KOPF = {"User-Agent": "Bestellhilfe-Preisabruf (privates Projekt, 1 Anfrage nach der anderen)"}
 PAUSE = 2.0  # robots.txt des Shops: Crawl-delay 2
+BILD = "https://olivia3-images.maexware-kundencloud.de/out/pictures/generated/product/1/240_240_75/"  # Bildserver des Shops
 hier = os.path.dirname(os.path.abspath(__file__))
 
 
@@ -57,8 +58,17 @@ def kategorie(pfad, kat):
     erg, urls, pg = [], set(), 0
     while pg < 400:
         t = seite(f"{pfad}?pgNr={pg}")
-        bloecke = t.split('<div class="listDetails">')[1:]
-        neu = [a for a in (artikel(b, kat) for b in bloecke) if a and a["u"] not in urls]
+        teile = t.split('<div class="listDetails">')
+        bloecke = teile[1:]
+        neu = []
+        for k, b in enumerate(bloecke):
+            a = artikel(b, kat)
+            if not a or a["u"] in urls:
+                continue
+            # Produktbild steht direkt vor dem Artikelblock (letztes Produktbild im Stück davor)
+            bilder = re.findall(r'<img[^>]+src="' + re.escape(BILD) + r'([^"]+)"', teile[k])
+            a["b"] = bilder[-1] if bilder else ""
+            neu.append(a)
         if not neu:
             break
         urls.update(a["u"] for a in neu)

@@ -48,6 +48,8 @@ for x in sortiment:
         x["p"], x["bis"] = a["p"], a["bis"]
         if a["g"]:
             x["g"] = a["g"]
+        if a.get("b"):
+            x["b"] = a["b"]  # Produktbild (nur bei Angeboten)
         treffer += 1
 print(treffer, "Angebote im Küchen-Sortiment eingetragen")
 if treffer < 200:

@@ -152,7 +152,35 @@ main{padding-bottom:110px}
 .sendeZeile b{flex:0 0 100%}
 .sendeblatt .knopf{background:var(--kopfFeld);color:#fff;border-color:var(--kopfRand)}
 .handyWrap{display:none;padding:12px 14px 40px}
-@media(max-width:700px){nav,main,.leiste,.stand{display:none!important}.handyWrap{display:block}.titel{font-size:18px}}
+/* Prospekt (Angebote mit Bild) */
+.prospekt{display:grid;grid-template-columns:repeat(auto-fill,minmax(165px,1fr));gap:10px;margin-top:8px}
+.prospekt.eng{grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px}
+.prospekt .gruppeKopf{grid-column:1/-1;margin:10px 0 0;font-size:13px}
+.kachel{background:#fff;border:1px solid var(--linie);border-radius:var(--radius);padding:8px;display:flex;flex-direction:column;gap:4px;position:relative;min-width:0}
+.kachel.drin{border-color:var(--watt);box-shadow:0 0 0 2px var(--wattHell)}
+.kachel.tippbar{cursor:pointer}
+.kachel .kbild{width:100%;aspect-ratio:1;object-fit:contain;display:block}
+.kachel .ohneBild{width:100%;aspect-ratio:1;display:flex;align-items:center;justify-content:center;background:var(--grund);color:var(--tinteWeich);font-size:30px;border-radius:4px}
+.kachel .kbis{position:absolute;top:6px;left:6px;margin:0}
+.kachel .kname{font-size:13px;line-height:1.25;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;min-height:3.75em}
+.kachel .kpreis{font-family:'Newsreader',Georgia,serif;font-size:21px;line-height:1.1;color:var(--messing);font-weight:600}
+.kachel .kgrund{font-size:11px;color:var(--tinteWeich);min-height:1.3em}
+.kachel .kfuss{margin-top:auto;display:flex;align-items:center;justify-content:center;gap:6px;padding-top:4px}
+.kachel .kfuss .knopf{width:100%;justify-content:center}
+.kachel .kfuss .kq{min-width:34px;text-align:center;font-weight:600;font-variant-numeric:tabular-nums}
+.kachel .kfuss button.pm{border:1px solid var(--watt);background:var(--wattHell);color:var(--watt);width:36px;height:32px;border-radius:var(--radius);font-size:18px;cursor:pointer}
+.hProspekt{margin-top:10px;padding-top:4px}
+/* Handy: Mikrofon und Ideen bleiben oben stehen, die Angebote laufen darunter durch */
+.hFest{position:sticky;top:0;z-index:4;background:var(--flaeche);margin:0 -12px;padding:8px 12px 2px;border-bottom:2px solid var(--messingRand);box-shadow:0 4px 8px -6px rgba(0,0,0,.25)}
+.hEingabe{display:flex;gap:10px;align-items:stretch}
+.hEingabe textarea{flex:1 1 auto;min-height:0;height:92px;margin:0;resize:none}
+.hEingabe .knopf.aufnahme.mikroRund{width:72px;height:72px;flex:0 0 72px;font-size:30px;align-self:center}
+.hKnoepfe{display:flex;gap:6px;margin-top:8px}
+.hKnoepfe .knopf{flex:1 1 auto;justify-content:center;padding-left:6px;padding-right:6px}
+.hKnoepfe .knopf.klein{flex:0 0 auto}
+.hFest .status{min-height:16px;margin-top:3px;font-size:12px}
+.hProspekt summary{font-size:16px;font-weight:600}
+@media(max-width:700px){nav,main,.leiste,.stand{display:none!important}.handyWrap{display:block}header{position:static}.titel{font-size:18px}}
 @media print{header,.nichtdruck,.postenFuss,.alt,.leiste{display:none!important}body{background:#fff}section{border:0}}
 </style>
 </head>
@@ -176,17 +204,25 @@ main{padding-bottom:110px}
 <div class="handyWrap"><section id="handy" class="nichtdruck">
   <h2>Was fällt dir ein?</h2>
   <div class="hinweis">Sprich deine Ideen ein oder tipp sie. Zum Bestellen schickst du sie an den Laptop.</div>
-  <textarea id="hText" placeholder="zwei Kilo Hackfleisch&#10;sechs Butter&#10;Sojadrink"></textarea>
-  <div class="zeile mikroZeile">
-    <button class="knopf aufnahme mikroRund" id="hMikro" type="button" aria-label="Sprechen">🎤</button>
-    <button class="knopf klein" id="hLeeren" type="button">leeren</button>
+  <div class="hFest">
+    <div class="hEingabe">
+      <button class="knopf aufnahme mikroRund" id="hMikro" type="button" aria-label="Sprechen">🎤</button>
+      <textarea id="hText" placeholder="zwei Kilo Hackfleisch&#10;sechs Butter&#10;Sojadrink"></textarea>
+    </div>
+    <div class="hKnoepfe">
+      <a class="knopf voll" id="hWa" target="_blank" rel="noopener">WhatsApp</a>
+      <a class="knopf" id="hMail">E-Mail</a>
+      <button class="knopf" id="hKop" type="button">Kopieren</button>
+      <button class="knopf klein" id="hLeeren" type="button">leeren</button>
+    </div>
+    <div class="status" id="hStatus"></div>
   </div>
-  <div class="status" id="hStatus"></div>
-  <div class="zeile" style="margin-top:8px">
-    <a class="knopf voll gross" id="hWa" target="_blank" rel="noopener">WhatsApp</a>
-    <a class="knopf gross" id="hMail">E-Mail</a>
-    <button class="knopf gross" id="hKop" type="button">Kopieren</button>
-  </div>
+  <details class="hProspekt" id="hProspekt" open>
+    <summary>Angebote der Woche</summary>
+    <div class="hinweis" id="hPStand" style="margin-top:6px"></div>
+    <div class="chips" id="hKat"></div>
+    <div class="prospekt eng" id="hListe"></div>
+  </details>
 </section></div>
 
 <main>
@@ -272,10 +308,11 @@ main{padding-bottom:110px}
 
   <!-- 6. Angebote -->
   <section class="schirm nichtdruck" id="reiter-angebote">
-    <h2>Das ist gerade günstig</h2>
+    <h2>Prospekt: Das ist gerade günstig</h2>
+    <div class="hinweis">Die Angebote dieser Woche aus dem Shop. Mit „In den Wagen“ kommt ein Artikel auf die Liste, mit + und − stellst du die Menge ein.</div>
     <div class="zeile"><label class="feld">Suchen<input type="text" id="aSuche" placeholder="z. B. Schnitzel, Käse, Joghurt"></label></div>
     <div class="chips" id="aKat"></div>
-    <div id="aListe" style="margin-top:8px"></div>
+    <div id="aListe"></div>
   </section>
 </main>
 
@@ -309,7 +346,7 @@ const A=ITEMS.map((r,i)=>{
   const t=r[0],fl=r[5];
   const gk=(/€\s*\/\s*(kg|l)/.test(r[3]||''))?zahl(r[3]):0;
   let bis=null; if(r[4]){const m=r[4].match(/(\d\d)\.(\d\d)\.(\d{4})/); if(m) bis=new Date(+m[3],+m[2]-1,+m[1]);}
-  return {i,t,c:r[1],p:r[2],g:r[3],gk,bis,aktiv:!!(bis&&bis>=heute),per100:!!(fl&1),bio:!!(fl&2),pf:!!(fl&4),u:r[6],
+  return {i,t,c:r[1],p:r[2],g:r[3],gk,bis,aktiv:!!(bis&&bis>=heute),per100:!!(fl&1),bio:!!(fl&2),pf:!!(fl&4),u:r[6],b:r[7]||'',
     n:nz(t),w:nz(t).split(' '),gg:/gut guenstig/.test(nz(t)),
     vegan:/vegan|pflanzlich|alpro|haferdrink|hafer drink|sojadrink|soja joghurt|sojajoghurt|planted|veggie|tofu|like meat|beyond|vemondo/i.test(t)};
 });
@@ -378,7 +415,7 @@ const schritt=a=>a.per100?0.5:1;
 const WZ={ein:1,eine:1,einen:1,einem:1,einmal:1,zwei:2,zwo:2,zweimal:2,drei:3,dreimal:3,vier:4,fuenf:5,fünf:5,sechs:6,sieben:7,acht:8,neun:9,zehn:10,elf:11,zwoelf:12,zwölf:12,dutzend:12,
   zwanzig:20,dreissig:30,dreißig:30,halbes:0.5,halbe:0.5,halb:0.5,anderthalb:1.5};
 const EINH={kilo:'kg',kg:'kg',kilogramm:'kg',pfund:'pfund',liter:'l',l:'l',packung:'x',packungen:'x',pack:'x',paket:'x',pakete:'x',stueck:'x',stück:'x',stk:'x',sack:'x',saecke:'x',säcke:'x',kasten:'x',kisten:'x',kiste:'x',dose:'x',dosen:'x',flasche:'x',flaschen:'x',becher:'x',mal:'x',x:'x'};
-const STOP=new Set(['von','vom','den','der','die','das','dem','bitte','etwas','noch','auch','mal','so','ca','circa','ungefähr','ungefaehr']);
+const STOP=new Set(['von','vom','den','der','die','das','dem','bitte','etwas','noch','auch','mal','so','ca','circa','ungefähr','ungefaehr','im','angebot','angebote','prospekt']);
 function zerlege(text){
   let t=text.replace(/\n+/g,',').replace(/;/g,',');
   t=t.replace(/\s+(und dann|und noch|und|dann|außerdem|ausserdem)\s+/gi,',');
@@ -582,17 +619,61 @@ function shopText(){
 /* ---------- Angebote ---------- */
 let aKat=null;
 const ANGBIS=(()=>{const z=new Map();A.filter(a=>a.aktiv).forEach(a=>{const k=a.bis.getTime();z.set(k,(z.get(k)||0)+1)});let b=0,n=0;z.forEach((v,k)=>{if(v>n){n=v;b=k}});if(!b)return '';const d=new Date(b);return String(d.getDate()).padStart(2,'0')+'.'+String(d.getMonth()+1).padStart(2,'0')+'.'})();
+const BILDBASIS=DATEN.bild||'';
+const bisKurz=a=>String(a.bis.getDate()).padStart(2,'0')+'.'+String(a.bis.getMonth()+1).padStart(2,'0')+'.';
+function angebotsListe(q,kat){
+  let l=q?suche(q,200,true):A.filter(a=>a.aktiv);
+  if(kat!==null)l=l.filter(a=>abtIndex(a)===kat);
+  return l.slice().sort((x,y)=>(abtIndex(x)-abtIndex(y))||x.t.localeCompare(y.t,'de'));
+}
+function kachelFuss(a){
+  const p=LISTE.find(x=>x.id===a.i);
+  if(!p)return `<button class="knopf klein voll" type="button" data-add="${a.i}">In den Wagen</button>`;
+  const q=a.per100?String(p.q).replace('.',',')+' kg':p.q+' ×';
+  return `<button class="pm" type="button" data-smm="${a.i}" aria-label="weniger">−</button><span class="kq">${q}</span><button class="pm" type="button" data-smp="${a.i}" aria-label="mehr">+</button>`;
+}
+function kachel(a,handy){
+  const bild=a.b?`<img class="kbild" loading="lazy" src="${BILDBASIS+a.b}" alt="" onerror="this.outerHTML='<div class=&quot;ohneBild&quot;>🛒</div>'">`:'<div class="ohneBild" aria-hidden="true">🛒</div>';
+  const preis=a.per100?eur(einzel(a))+'/kg':eur(a.p);
+  const drin=!handy&&LISTE.some(x=>x.id===a.i);
+  return `<div class="kachel${drin?' drin':''}${handy?' tippbar':''}" data-k="${a.i}"${handy?` data-hang="${a.i}"`:''}>${bild}
+    <span class="badge ang kbis">bis ${bisKurz(a)}</span>
+    <div class="kname">${esc(a.t)}</div><div class="kpreis">${preis}</div><div class="kgrund">${a.per100?'nach Gewicht':esc(a.g||'')}${a.pf?' · + Pfand':''}</div>
+    ${handy?'':`<div class="kfuss" data-kfuss="${a.i}">${kachelFuss(a)}</div>`}</div>`;
+}
+function prospektHtml(l,mitKoepfen,handy){
+  let h='',last=-1;
+  l.forEach(a=>{const j=abtIndex(a);if(mitKoepfen&&j!==last){h+=`<div class="gruppeKopf">${abtName(j)}</div>`;last=j}h+=kachel(a,handy)});
+  return h;
+}
+function aktualisiereKachel(i){
+  const a=A[i]; if(!a)return;
+  document.querySelectorAll(`[data-kfuss="${i}"]`).forEach(e=>{e.innerHTML=kachelFuss(a);e.parentNode.classList.toggle('drin',LISTE.some(x=>x.id===i))});
+}
 function zeigeAngebote(){
   const q=$('aSuche').value.trim();
-  let l=q?suche(q,60,true):A.filter(a=>a.aktiv&&(aKat===null||abtIndex(a)===aKat)).slice(0,80);
-  if(q&&aKat!==null)l=l.filter(a=>abtIndex(a)===aKat);
-  l.sort((x,y)=>x.t.localeCompare(y.t,'de'));
+  const l=angebotsListe(q,aKat);
   $('aKat').innerHTML=ABT.map((k,j)=>`<span class="chip${aKat===j?' an':''}" data-akat="${j}">${k}</span>`).join('');
   const nA=A.filter(a=>a.aktiv).length;
   $('aListe').innerHTML=(nA?'':'<div class="warn">Es gibt keine gültigen Angebote mehr. Neue Angebote kommen jeden Mittwoch früh automatisch; bis dahin die Preise im Shop prüfen.</div>')+
-    (l.length?l.map(a=>`<div class="posten"><div class="postenKopf"><div class="name"><b>${esc(a.t)}</b><div>${badges(a)}</div></div>
-      <div class="summe">${preisText(a)}</div><button class="knopf klein voll" data-add="${a.i}">+</button></div></div>`).join(''):'<div class="leer">Keine Treffer.</div>')+
-    `<div class="hinweis" style="margin-top:6px">${nA} gültige Angebote${ANGBIS?' (gültig bis '+ANGBIS+')':''}${l.length>=60||l.length>=80?' – nur die ersten angezeigt, bitte genauer suchen':''}.</div>`;
+    `<div class="hinweis" style="margin-top:6px">${q||aKat!==null?l.length+' von ':''}${nA} gültigen Angeboten${ANGBIS?' (gültig bis '+ANGBIS+')':''}.</div>`+
+    (l.length?`<div class="prospekt">${prospektHtml(l,!q,false)}</div>`:'<div class="leer">Keine Treffer.</div>');
+}
+/* Prospekt am Handy: Antippen schreibt den Artikel mit „(Angebot)“ in die Ideen */
+let hKat=null;
+function zeigeHandyProspekt(){
+  const nA=A.filter(a=>a.aktiv).length;
+  $('hPStand').textContent=nA?`${nA} Angebote${ANGBIS?', gültig bis '+ANGBIS:''} Antippen = kommt in deine Ideen, mit dem Hinweis „Angebot“.`:'Gerade keine gültigen Angebote.';
+  $('hKat').innerHTML=ABT.map((k,j)=>`<span class="chip${hKat===j?' an':''}" data-hkat="${j}">${k}</span>`).join('');
+  $('hListe').innerHTML=prospektHtml(angebotsListe('',hKat),true,true);
+}
+function handyAngebot(a){
+  const name=a.t.replace(/,/g,' ').replace(/\s+und\s+/gi,' & ').replace(/\s+/g,' ').trim()+' (Angebot)';
+  const e=$('hText'); const z=e.value.split('\n').filter(s=>s.trim());
+  const k=z.findIndex(s=>s.replace(/^\d+x\s+/,'')===name);
+  if(k>=0){const n=+((z[k].match(/^(\d+)x\s/)||[0,1])[1]);z[k]=(n+1)+'x '+name}else z.push('1x '+name);
+  e.value=z.join('\n'); e.dispatchEvent(new Event('input')); e.scrollTop=e.scrollHeight;
+  meld('hStatus','In deinen Ideen: '+a.t);
 }
 
 /* ---------- Sprache ---------- */
@@ -615,7 +696,7 @@ function macheMikro(btnId,taId,stId,trenner){
 
 /* ---------- Ereignisse ---------- */
 function verstehen(){
-  const t=$('eingabe').value.split('\n').filter(l=>!/🛒/.test(l)&&!/^\s*([^•\n]*·\s*)?\d\d\.\d\d\.\s*$/.test(l)&&!/^\s*Stand der Preise/.test(l)).map(l=>l.replace(/^\s*[•\-*]\s*/,'')).join('\n').trim(); if(!t)return;
+  const t=$('eingabe').value.split('\n').filter(l=>!/🛒/.test(l)&&!/^\s*([^•\n]*·\s*)?\d\d\.\d\d\.\s*$/.test(l)&&!/^\s*Stand der Preise/.test(l)).map(l=>l.replace(/^\s*[•\-*]\s*/,'').replace(/\s*\(Angebot\)\s*$/i,'')).join('\n').trim(); if(!t)return;
   let ok=0,nicht=0;
   zerlege(t).forEach(fr=>{
     const w=wunsch(fr), r=suche(w.term,1);
@@ -627,13 +708,13 @@ function verstehen(){
   meld('mikroStatus',`${ok} Artikel hinzugefügt${nicht?`, ${nicht} nicht gefunden`:''}. Schau in den Wagen.`);
 }
 document.addEventListener('click',async ev=>{
-  const t=ev.target.closest('[data-reiter],[data-weiter],[data-mehr],[data-smm],[data-smp],[data-sweg],[data-mm],[data-mp],[data-weg],[data-andere],[data-tausch],[data-stamm],[data-add],[data-akat]'); if(!t)return;
+  const t=ev.target.closest('[data-reiter],[data-weiter],[data-mehr],[data-smm],[data-smp],[data-sweg],[data-mm],[data-mp],[data-weg],[data-andere],[data-tausch],[data-stamm],[data-add],[data-akat],[data-hang],[data-hkat]'); if(!t)return;
   const d=t.dataset;
   if(d.reiter!==undefined)reiter(d.reiter);
   else if(d.weiter!==undefined){reiter(d.weiter);scrollTo(0,0)}
   else if(d.mehr!==undefined){const i=+d.mehr;mehr.has(i)?mehr.delete(i):mehr.add(i);zeigeListe()}
-  else if(d.smm!==undefined){const k=LISTE.findIndex(x=>x.id===+d.smm),p=LISTE[k];p.q=+(p.q-schritt(A[p.id])).toFixed(2);if(p.q<=0)LISTE.splice(k,1);zeigeListe()}
-  else if(d.smp!==undefined){const p=LISTE.find(x=>x.id===+d.smp);p.q=+(p.q+schritt(A[p.id])).toFixed(2);zeigeListe()}
+  else if(d.smm!==undefined){const k=LISTE.findIndex(x=>x.id===+d.smm),p=LISTE[k];if(p){p.q=+(p.q-schritt(A[p.id])).toFixed(2);if(p.q<=0)LISTE.splice(k,1)}zeigeListe();aktualisiereKachel(+d.smm)}
+  else if(d.smp!==undefined){const p=LISTE.find(x=>x.id===+d.smp);if(p)p.q=+(p.q+schritt(A[p.id])).toFixed(2);zeigeListe();aktualisiereKachel(+d.smp)}
   else if(d.sweg!==undefined){const k=LISTE.findIndex(x=>x.id===+d.sweg);if(k>=0)LISTE.splice(k,1);zeigeListe()}
   else if(d.mm!==undefined){const p=LISTE[+d.mm],a=A[p.id],s=schritt(a);p.q=+(p.q-s).toFixed(2);if(p.q<=0)LISTE.splice(+d.mm,1);zeigeListe()}
   else if(d.mp!==undefined){const p=LISTE[+d.mp],a=A[p.id];p.q=+(p.q+schritt(a)).toFixed(2);zeigeListe()}
@@ -643,8 +724,10 @@ document.addEventListener('click',async ev=>{
     const ex=LISTE.findIndex((x,j)=>x.id===i&&j!==k);const roh=p.roh;
     if(ex>=0){LISTE[ex].q+=p.q;LISTE.splice(k,1)}else{p.id=i}zeigeListe()}
   else if(d.stamm!==undefined){fuegeHinzu(A[+d.stamm],1,t.dataset.k||null);zeigeListe()}
-  else if(d.add!==undefined){fuegeHinzu(A[+d.add],1,null);zeigeListe();meld('listeStatus','Zur Liste hinzugefügt.')}
+  else if(d.add!==undefined){const a=A[+d.add];fuegeHinzu(a,a.per100?(packKg(a.t)||1):1,null);zeigeListe();aktualisiereKachel(+d.add);meld('listeStatus','Zur Liste hinzugefügt.')}
   else if(d.akat!==undefined){const j=+d.akat;aKat=(aKat===j)?null:j;zeigeAngebote()}
+  else if(d.hang!==undefined){handyAngebot(A[+d.hang])}
+  else if(d.hkat!==undefined){const j=+d.hkat;hKat=(hKat===j)?null:j;zeigeHandyProspekt()}
 });
 document.addEventListener('change',ev=>{
   const t=ev.target; if(t.dataset&&t.dataset.erl!==undefined){LISTE[+t.dataset.erl].erl=t.checked;zeigeListe()}
@@ -689,8 +772,10 @@ function reiter(n){
   REITER.forEach(r=>{$('reiter-'+r).classList.toggle('an',r===n)});
   document.querySelectorAll('#reiterLeiste button').forEach(b=>b.setAttribute('aria-current',b.dataset.reiter===n?'true':'false'));
   $('sendeblatt').hidden=true;
+  if(n==='angebote')zeigeAngebote();
   try{sessionStorage.setItem('bh_reiter',n)}catch(e){}
 }
+$('hProspekt').addEventListener('toggle',()=>{if($('hProspekt').open&&!$('hListe').children.length)zeigeHandyProspekt()});
 /* ---------- Start ---------- */
 laden();
 $('schiff').value=SET.schiff||''; $('personen').value=SET.personen; $('proPerson').value=SET.proPerson;
@@ -698,7 +783,7 @@ $('stand').textContent=`Angebote vom ${datum(STAND)}${ANGBIS?', gültig bis '+AN
 const tage=Math.round((heute-new Date(STAND))/86400000);
 if(tage>7){const w=$('alt');w.style.display='block';w.textContent=`Achtung: Die Angebote sind ${tage} Tage alt. Angebote können abgelaufen sein. Die Angebote werden jeden Mittwoch früh von selbst neu geholt; bitte vor dem Bestellen die Preise im Shop prüfen.`}
 if(!SR)$('mikro').title='Keine Spracheingabe in diesem Browser; Tastatur-Mikrofon nutzen';
-zeigeVegan(); zeigeListe(); zeigeAngebote();
+zeigeVegan(); zeigeListe(); zeigeAngebote(); zeigeHandyProspekt();
 let r0='wer';try{r0=sessionStorage.getItem('bh_reiter')||(LISTE.length?'wagen':'wer')}catch(e){} reiter(REITER.includes(r0)?r0:'wer');
 })();
 </script>

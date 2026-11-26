@@ -37,7 +37,10 @@ for x in roh:
     per100 = bool(m and m.group(2) == "kg" and gk and abs(p * 10 - gk) < 0.2 and p < 4.0
                   and not (w_kg is not None and abs(w_kg - 0.1) < 0.001))
     fl = (1 if per100 else 0) | (2 if x["bio"] else 0) | (4 if x["pf"] else 0)
-    items.append([sauber(x["t"]), x["c"], p, g, bis_iso(x["bis"]), fl, x["u"]])
+    it = [sauber(x["t"]), x["c"], p, g, bis_iso(x["bis"]), fl, x["u"]]
+    if x.get("b"):
+        it.append(x["b"])  # Produktbild (Dateiname auf dem Bildserver des Shops)
+    items.append(it)
 
 # Stammartikel NUR aus echten Rechnungen (bisher: 15.07., 02.09., 16.09., 18.11.2026; siehe Wiki 'Rechnungsvergleich 2026'): Name, Menge, Suchmuster.
 # Beispiel-Warenkörbe der KI zählen nicht (Jörg, 2026-11-25). Weitere Rechnungen hier ergänzen.
@@ -100,7 +103,8 @@ for name, m, mu in STAMM:
     else:
         stamm.append({"k": name, "i": hit, "m": m})
 
-daten = {"stand": stand, "sortiment": sortiment, "basis": "https://lueck-niebuell.edeka.shop", "items": items, "stamm": stamm}
+daten = {"stand": stand, "sortiment": sortiment, "basis": "https://lueck-niebuell.edeka.shop",
+         "bild": "https://olivia3-images.maexware-kundencloud.de/out/pictures/generated/product/1/240_240_75/", "items": items, "stamm": stamm}
 vorlage = open(os.path.join(hier, "vorlage.html"), encoding="utf-8").read()
 js = json.dumps(daten, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
 ziel = os.path.join(hier, "bestellhilfe.html")
