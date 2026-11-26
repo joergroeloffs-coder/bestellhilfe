@@ -15,7 +15,8 @@ if (-not (Test-Path (Join-Path $ziel '.git'))) {
 
 $skript = Join-Path $ziel 'wochenlauf.ps1'
 $aktion = New-ScheduledTaskAction -Execute 'powershell.exe' `
-    -Argument "-NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File `"$skript`""$ausloeser = @(
+    -Argument "-NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File `"$skript`""
+$ausloeser = @(
     (New-ScheduledTaskTrigger -Weekly -DaysOfWeek Wednesday -At '06:00'),
     (New-ScheduledTaskTrigger -Weekly -DaysOfWeek Wednesday -At '09:00')
 )
